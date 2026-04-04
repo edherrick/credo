@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getMetricGeoJSON, getMetricValues } from '../api';
-
+	import Timeline from './Timeline.svelte';
 	interface Props {
 		metricId: string;
 		geographyId: string;
@@ -187,17 +187,11 @@
 	<!-- Time slider (bottom-center) -->
 	{#if allValues.length > 1}
 		<div class="time-slider">
-			<label class="time-label">
-				Year
-				<select
-					value={selectedDate ?? ''}
-					onchange={(e) => handleDateChange((e.target as HTMLSelectElement).value)}
-				>
-					{#each allValues as v (v.date)}
-						<option value={v.date}>{formatDate(v.date)}</option>
-					{/each}
-				</select>
-			</label>
+			<Timeline
+				values={allValues}
+				selectedIndex={allValues.findIndex((v) => v.date === selectedDate)}
+				onChange={(index: number) => handleDateChange(allValues[index].date)}
+			/>
 		</div>
 	{/if}
 </div>
@@ -311,40 +305,16 @@
 		font-size: 0.65rem;
 		color: #94a3b8;
 	}
-
-	/* ── Time slider ───────────────────────────────── */
+	/* ── Timeline ────────────────────────────────────── */
 	.time-slider {
 		position: absolute;
 		bottom: 2rem;
 		left: 50%;
 		transform: translateX(-50%);
-		z-index: 400;
+		z-index: 500;
 		background: white;
-		border: 1px solid #e8e8e4;
 		border-radius: 8px;
 		padding: 0.5rem 0.75rem;
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-	}
-
-	.time-label {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		font-size: 0.7rem;
-		font-weight: 600;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: #94a3b8;
-	}
-
-	.time-label select {
-		font-family: inherit;
-		font-size: 0.8rem;
-		font-weight: 600;
-		color: #1a2332;
-		border: none;
-		background: transparent;
-		cursor: pointer;
-		outline: none;
 	}
 </style>
