@@ -3,9 +3,11 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { onMount } from 'svelte';
 	import { auth } from '$lib/stores/auth';
+	import { theme } from '$lib/stores/theme';
 	import { getMe } from '$lib/api';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
+	import { Sun, Moon } from 'lucide-svelte';
 
 	let { children } = $props();
 
@@ -50,6 +52,19 @@
 					class:active={currentPath === '/map'}>Map</a
 				>
 			</nav>
+
+			<button
+				class="theme-toggle"
+				onclick={() => theme.toggle()}
+				aria-label="Toggle theme"
+				title={$theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+			>
+				{#if $theme === 'dark'}
+					<Sun size={16} />
+				{:else}
+					<Moon size={16} />
+				{/if}
+			</button>
 
 			<div class="nav-auth">
 				{#if authState}
@@ -214,6 +229,29 @@
 		justify-content: center;
 		font-size: 0.75rem;
 		font-weight: 600;
+	}
+
+	.theme-toggle {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 32px;
+		height: 32px;
+		background: transparent;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		border-radius: var(--radius-md);
+		color: rgba(255, 255, 255, 0.55);
+		transition:
+			color var(--transition-fast),
+			border-color var(--transition-fast),
+			background var(--transition-fast);
+		flex-shrink: 0;
+	}
+
+	.theme-toggle:hover {
+		color: white;
+		border-color: rgba(255, 255, 255, 0.25);
+		background: rgba(255, 255, 255, 0.07);
 	}
 
 	.content {

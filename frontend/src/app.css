@@ -8,9 +8,9 @@
 /* ── Tokens ────────────────────────────────────────────── */
 :root {
 	/* Brand */
-	--color-navy: #1a2332;
-	--color-navy-light: #243044;
-	--color-accent: #f03b20; /* primary red-orange */
+	--color-navy: #07111e;       /* nav bar — deepest surface */
+	--color-navy-light: #0e1d30; /* hover states on nav */
+	--color-accent: #f03b20;     /* red-orange — blazes on dark */
 	--color-accent-dark: #d63418;
 
 	/* Choropleth scale (yellow → red) */
@@ -20,23 +20,23 @@
 	--choropleth-4: #f03b20;
 	--choropleth-5: #bd0026;
 
-	/* Neutrals */
-	--color-bg: #f7f7f5;
-	--color-surface: #ffffff;
-	--color-border: #e8e8e4;
-	--color-border-strong: #d1d1cb;
+	/* Neutrals — deep slate dark theme */
+	--color-bg: #0c1929;      /* page body — ink navy */
+	--color-surface: #132338; /* cards, panels, raised surfaces */
+	--color-border: #1c3252;  /* subtle separators */
+	--color-border-strong: #2b4a72; /* visible separators */
 
-	/* Text */
-	--color-text: #1a2332;
-	--color-text-muted: #64748b;
-	--color-text-faint: #94a3b8;
+	/* Text — cool off-white, not harsh pure white */
+	--color-text: #c4d4e8;
+	--color-text-muted: #6080a0;
+	--color-text-faint: #3d5878;
 
 	/* Semantic */
-	--color-error-bg: #fef2f2;
-	--color-error-border: #fecaca;
-	--color-error-text: #991b1b;
-	--color-warn-bg: #fef3c7;
-	--color-warn-text: #92400e;
+	--color-error-bg: rgba(240, 59, 32, 0.12);
+	--color-error-border: rgba(240, 59, 32, 0.35);
+	--color-error-text: #f87171;
+	--color-warn-bg: rgba(245, 158, 11, 0.12);
+	--color-warn-text: #fbbf24;
 
 	/* Typography */
 	--font-sans: 'DM Sans', system-ui, sans-serif;
@@ -67,15 +67,45 @@
 	--radius-lg: 10px;
 	--radius-xl: 16px;
 
-	/* Shadows */
-	--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-	--shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-	--shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
-	--shadow-accent: 0 4px 16px rgba(240, 59, 32, 0.15);
+	/* Shadows — deeper on dark backgrounds */
+	--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.25);
+	--shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+	--shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.6);
+	--shadow-accent: 0 4px 20px rgba(240, 59, 32, 0.35);
 
 	/* Transitions */
 	--transition-fast: 0.12s ease;
 	--transition-base: 0.18s ease;
+}
+
+/* ── Light theme overrides ──────────────────────────────── */
+[data-theme="light"] {
+	--color-bg: #f4f2ef;
+	--color-surface: #ffffff;
+	--color-border: #e2dcd6;
+	--color-border-strong: #cbc4bc;
+
+	--color-text: #1a1714;
+	--color-text-muted: #6b6460;
+	--color-text-faint: #a8a099;
+
+	--color-error-bg: rgba(240, 59, 32, 0.08);
+	--color-error-border: rgba(240, 59, 32, 0.25);
+	--color-error-text: #c0392b;
+	--color-warn-bg: rgba(245, 158, 11, 0.10);
+	--color-warn-text: #92640a;
+
+	--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.05);
+	--shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+	--shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.14);
+	--shadow-accent: 0 4px 20px rgba(240, 59, 32, 0.20);
+}
+
+/* ── Theme transition ───────────────────────────────────── */
+body {
+	transition:
+		background-color var(--transition-base),
+		color var(--transition-base);
 }
 
 /* ── Reset ─────────────────────────────────────────────── */
@@ -120,6 +150,11 @@ button {
 /* ── Typography helpers ─────────────────────────────────── */
 .serif {
 	font-family: var(--font-serif);
+}
+
+/* ── Map: crosshair cursor when box zoom is active ─────── */
+.map-wrap.box-zoom-active .map {
+	cursor: crosshair !important;
 }
 
 /* ── Utility: visually hidden (accessibility) ───────────── */

@@ -5,6 +5,7 @@
 	import { goto } from '$app/navigation';
 	import type { User } from '$lib/types';
 	import { resolve } from '$app/paths';
+	import { ArrowLeft } from 'lucide-svelte';
 
 	let user = $state<User | null>(null);
 	let loading = $state(true);
@@ -57,7 +58,7 @@
 			<dd>{new Date(user.created_at).toLocaleDateString()}</dd>
 		</dl>
 		<button onclick={handleLogout}>Log out</button>
-		<p><a href={resolve('/')}>← Home</a></p>
+		<a href={resolve('/')} class="back-link"><ArrowLeft size={14} aria-hidden="true" /> Home</a>
 	{/if}
 </main>
 
@@ -109,5 +110,20 @@
 
 	button:hover {
 		background: var(--color-accent-dark);
+	}
+
+	.back-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		margin-top: var(--space-4);
+		font-size: 0.85rem;
+		font-weight: 500;
+		color: var(--color-text-muted);
+		transition: color var(--transition-fast);
+	}
+
+	.back-link:hover {
+		color: var(--color-text);
 	}
 </style>

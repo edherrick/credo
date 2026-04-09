@@ -14,7 +14,8 @@ export interface Metric {
 }
 
 export interface MetricValuePoint {
-	date: string;
+	period_start: string;
+	period_end: string | null;
 	value: number;
 }
 
@@ -47,4 +48,24 @@ export interface User {
 export interface AuthToken {
 	access_token: string;
 	token_type: string;
+}
+
+export interface CountySeries {
+	id: string;
+	name: string;
+	values: (number | null)[];
+}
+
+export interface MetricAggregateResponse {
+	metric_id: string;
+	dates: string[];
+	avg_values: number[];
+	counties: CountySeries[];
+}
+
+export interface MetricSeries {
+	metricId: string;
+	label: string;
+	dates: string[];
+	avgValues: (number | null)[];
 }

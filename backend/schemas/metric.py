@@ -14,7 +14,8 @@ class MetricOut(BaseModel):
 
 
 class MetricValuePoint(BaseModel):
-    date: datetime.date
+    period_start: datetime.date
+    period_end: datetime.date | None = None
     value: float
 
 
@@ -23,3 +24,16 @@ class MetricValuesOut(BaseModel):
     geography_id: str
     unit: str
     values: list[MetricValuePoint]
+
+
+class CountySeries(BaseModel):
+    id: str
+    name: str
+    values: list[float | None]
+
+
+class MetricAggregateOut(BaseModel):
+    metric_id: str
+    dates: list[str]
+    avg_values: list[float]
+    counties: list[CountySeries]

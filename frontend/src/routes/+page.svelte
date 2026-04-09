@@ -3,6 +3,7 @@
 	import { getGeographies, getMetrics, getAgendas } from '$lib/api';
 	import type { Geography, Metric, Agenda } from '$lib/types';
 	import { resolve } from '$app/paths';
+	import { ArrowRight, TrendingUp, TrendingDown } from 'lucide-svelte';
 
 	let geographies = $state<Geography[]>([]);
 	let metrics = $state<Metric[]>([]);
@@ -29,12 +30,10 @@
 		return `${geo.name} · ${metrics[0]?.display_name ?? ''}`;
 	}
 
-	function directionLabel(direction: string): string {
-		return direction === 'lower' ? '↓ Lower' : '↑ Raise';
-	}
+	// directionLabel replaced by directionIcon — rendered in template
 
 	function formatCurrency(val: number | null): string {
-		if (!val) return '—';
+		if (val === null || val === undefined) return '—';
 		return new Intl.NumberFormat('en-US', {
 			style: 'currency',
 			currency: 'USD',
@@ -61,7 +60,7 @@
 		<div class="hero-actions">
 			<a href={resolve('/map?fips=17031&metric=median_home_price')} class="cta-primary">
 				Explore the map
-				<span class="arrow">→</span>
+				<ArrowRight size={16} aria-hidden="true" />
 			</a>
 			<a href={resolve('/register')} class="cta-ghost">Create an account</a>
 		</div>
@@ -94,7 +93,7 @@
 							</div>
 							<h3 class="geo-name">{geo.name}</h3>
 							<div class="geo-metric">{metricLabel(geo)}</div>
-							<div class="geo-arrow">View map →</div>
+							<div class="geo-arrow">View map <ArrowRight size={13} aria-hidden="true" /></div>
 						</a>
 					{/each}
 				</div>
@@ -114,7 +113,11 @@
 					{#each agendas as agenda (agenda.id)}
 						<div class="agenda-card">
 							<div class="agenda-badge" class:lower={agenda.direction === 'lower'}>
-								{directionLabel(agenda.direction)}
+								{#if agenda.direction === 'lower'}
+									<TrendingDown size={12} aria-hidden="true" /> Lower
+								{:else}
+									<TrendingUp size={12} aria-hidden="true" /> Raise
+								{/if}
 							</div>
 							<h3 class="agenda-title">{agenda.title}</h3>
 							<div class="agenda-meta">
@@ -142,9 +145,36 @@
 		color: white;
 		padding: var(--space-20) var(--space-6) var(--space-16);
 		position: relative;
+		overflow: hidden;
+	}
+
+	/* Subtle data-grid motif — evokes charts and civic infrastructure */
+	.hero::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background-image:
+			linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+		background-size: 52px 52px;
+		pointer-events: none;
+	}
+
+	/* Warm glow from accent at bottom-left — echoes the choropleth palette */
+	.hero::after {
+		content: '';
+		position: absolute;
+		bottom: -60px;
+		left: -40px;
+		width: 320px;
+		height: 320px;
+		background: radial-gradient(circle, rgba(240, 59, 32, 0.12) 0%, transparent 70%);
+		pointer-events: none;
 	}
 
 	.hero-inner {
+		position: relative;
+		z-index: 1;
 		max-width: var(--max-width-text);
 		margin: 0 auto;
 	}
@@ -202,10 +232,10 @@
 		transform: translateY(-1px);
 	}
 
-	.cta-primary .arrow {
+	.cta-primary :global(svg) {
 		transition: transform var(--transition-fast);
 	}
-	.cta-primary:hover .arrow {
+	.cta-primary:hover :global(svg) {
 		transform: translateX(3px);
 	}
 
@@ -370,6 +400,9 @@
 		font-weight: 500;
 		color: var(--color-accent);
 		opacity: 0;
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
 		transition: opacity var(--transition-fast);
 	}
 
@@ -397,6 +430,7 @@
 	.agenda-badge {
 		display: inline-flex;
 		align-items: center;
+		gap: 0.3rem;
 		font-size: 0.7rem;
 		font-weight: 600;
 		letter-spacing: 0.08em;

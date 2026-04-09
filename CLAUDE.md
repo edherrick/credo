@@ -37,12 +37,21 @@ credo/
 
 `docs/` is a symlink to the notes vault at `/home/ed/Documents/notes/projects/credo`.
 
+**At the start of every session, read these files to orient yourself:**
+
+1. `docs/STATUS.md` — current phase, what's built, what's in progress, uncommitted changes
+2. `docs/Roadmap.md` — phase overview and Phase 1 milestones
+
+Then read these as needed:
+
 ```
 docs/implementation/Phase 1 Schema.md   ← authoritative DB schema
 docs/implementation/Phase 1 API.md      ← authoritative API contract
 docs/Decisions.md                       ← architectural decisions log
 docs/Tech Stack.md                      ← infrastructure and library choices
 ```
+
+**Keep `docs/STATUS.md` up to date.** When meaningful progress is made or a session ends mid-task, update the "In Progress / Last Session" and milestone checklist sections.
 
 ## Running Locally
 
@@ -134,3 +143,4 @@ Never add `:global()` CSS to component files — global rules belong in `app.css
 - No SSR for authenticated routes (`export const ssr = false` in `+page.ts`)
 - Pydantic schemas in `schemas/` are separate from ORM models in `models/`
 - Phase 1 scope only — do not add endpoints or tables not in the spec docs
+- Icons: use `lucide-svelte` — never inline SVGs or Unicode arrows/symbols in markup

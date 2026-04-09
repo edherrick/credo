@@ -1,4 +1,4 @@
-import type { Agenda, AuthToken, Geography, Metric, MetricValuesResponse, User } from './types';
+import type { Agenda, AuthToken, Geography, Metric, MetricAggregateResponse, MetricValuesResponse, User } from './types';
 
 const BASE = '/api/v1';
 
@@ -31,6 +31,20 @@ export async function getMetricValues(
 	return res.json();
 }
 
+export async function getStateMetricGeoJSON(
+	stateFips: string,
+	metricId: string,
+	date?: string
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+): Promise<any> {
+	const url = new URL(`${BASE}/metrics/${metricId}/geojson`, location.origin);
+	url.searchParams.set('state_fips', stateFips);
+	if (date) url.searchParams.set('date', date);
+	const res = await fetch(url.toString());
+	if (!res.ok) throw new Error('Failed to fetch state GeoJSON');
+	return res.json();
+}
+
 export async function getMetricGeoJSON(
 	fips: string,
 	metricId: string,
@@ -41,6 +55,17 @@ export async function getMetricGeoJSON(
 	if (date) url.searchParams.set('date', date);
 	const res = await fetch(url.toString());
 	if (!res.ok) throw new Error('Failed to fetch GeoJSON');
+	return res.json();
+}
+
+export async function getMetricAggregate(
+	metricId: string,
+	stateFips: string
+): Promise<MetricAggregateResponse> {
+	const url = new URL(`${BASE}/metrics/${metricId}/aggregate`, location.origin);
+	url.searchParams.set('state_fips', stateFips);
+	const res = await fetch(url.toString());
+	if (!res.ok) throw new Error('Failed to fetch metric aggregate');
 	return res.json();
 }
 
