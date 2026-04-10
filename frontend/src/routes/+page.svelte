@@ -1,45 +1,36 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { getGeographies, getMetrics, getAgendas } from '$lib/api';
-	import type { Geography, Metric, Agenda } from '$lib/types';
 	import { resolve } from '$app/paths';
-	import { ArrowRight, TrendingUp, TrendingDown } from 'lucide-svelte';
+	import { ArrowRight } from 'lucide-svelte';
 
-	let geographies = $state<Geography[]>([]);
-	let metrics = $state<Metric[]>([]);
-	let agendas = $state<Agenda[]>([]);
-	let loading = $state(true);
-	let error = $state<string | null>(null);
-
-	onMount(async () => {
-		try {
-			[geographies, metrics, agendas] = await Promise.all([
-				getGeographies(),
-				getMetrics(),
-				getAgendas()
-			]);
-		} catch (e) {
-			error = e instanceof Error ? e.message : 'Failed to load data';
-		} finally {
-			loading = false;
+	const steps = [
+		{
+			n: '01',
+			title: 'Identify a problem',
+			body: 'Track a metric — median home price, vacancy rate, new permits — across your community over time.'
+		},
+		{
+			n: '02',
+			title: 'Develop your credo',
+			body: 'Write your founding beliefs and policy positions. Fork an existing credo or start from scratch.'
+		},
+		{
+			n: '03',
+			title: 'Build agendas',
+			body: 'Concrete proposals with measurable targets, supporting evidence, and constituent backing.'
+		},
+		{
+			n: '04',
+			title: 'Measure outcomes',
+			body: 'Track whether the metric moves after policy is enacted. The record is permanent and public.'
 		}
-	});
+	];
 
-	function metricLabel(geo: Geography): string {
-		// TODO: Why can this be empty all metrics should have a display name??
-		return `${geo.name} · ${metrics[0]?.display_name ?? ''}`;
-	}
-
-	// directionLabel replaced by directionIcon — rendered in template
-
-	function formatCurrency(val: number | null): string {
-		if (val === null || val === undefined) return '—';
-		return new Intl.NumberFormat('en-US', {
-			style: 'currency',
-			currency: 'USD',
-			maximumFractionDigits: 0
-		}).format(val);
-	}
+	const tenets = [
+		'Policy should be grounded in measurable outcomes, not institutional funding.',
+		'Every community deserves the same quality of evidence that corporate-funded think tanks access.',
+		'Accountability requires memory — who said what, who acted, what changed.',
+		'Transparency of reasoning matters as much as transparency of data.'
+	];
 </script>
 
 <svelte:head>
@@ -58,8 +49,8 @@
 			legislation. Transparent, metrics-anchored, and open source.
 		</p>
 		<div class="hero-actions">
-			<a href={resolve('/map?fips=17031&metric=median_home_price')} class="cta-primary">
-				Explore the map
+			<a href={resolve('/credo/ed')} class="cta-primary">
+				See an example credo
 				<ArrowRight size={16} aria-hidden="true" />
 			</a>
 			<a href={resolve('/register')} class="cta-ghost">Create an account</a>
@@ -68,75 +59,60 @@
 	<div class="hero-rule"></div>
 </section>
 
-{#if loading}
-	<div class="loading-state">
-		<div class="spinner"></div>
-		<span>Loading data…</span>
+<!-- How it works -->
+<section class="section">
+	<div class="section-inner">
+		<div class="section-header">
+			<h2 class="section-title">How it works</h2>
+			<p class="section-sub">From problem to policy in four steps</p>
+		</div>
+		<div class="steps">
+			{#each steps as step}
+				<div class="step">
+					<div class="step-number">{step.n}</div>
+					<div class="step-content">
+						<h3 class="step-title">{step.title}</h3>
+						<p class="step-body">{step.body}</p>
+					</div>
+				</div>
+			{/each}
+		</div>
 	</div>
-{:else if error}
-	<div class="error-banner">{error}</div>
-{:else}
-	<!-- Geographies -->
-	{#if geographies.length > 0}
-		<section class="section">
-			<div class="section-inner">
-				<div class="section-header">
-					<h2 class="section-title">Geographies</h2>
-					<p class="section-sub">Active regions with housing price data</p>
-				</div>
-				<div class="card-grid">
-					{#each geographies as geo (geo.id)}
-						<a href={resolve(`/map?fips=${geo.id}&metric=median_home_price`)} class="geo-card">
-							<div class="geo-card-top">
-								<span class="geo-type">{geo.geo_type}</span>
-								<span class="geo-fips">FIPS {geo.id}</span>
-							</div>
-							<h3 class="geo-name">{geo.name}</h3>
-							<div class="geo-metric">{metricLabel(geo)}</div>
-							<div class="geo-arrow">View map <ArrowRight size={13} aria-hidden="true" /></div>
-						</a>
-					{/each}
-				</div>
-			</div>
-		</section>
-	{/if}
+</section>
 
-	<!-- Agendas -->
-	{#if agendas.length > 0}
-		<section class="section section-alt">
-			<div class="section-inner">
-				<div class="section-header">
-					<h2 class="section-title">Active Agendas</h2>
-					<p class="section-sub">Community policy goals with measurable targets</p>
+<!-- Beliefs -->
+<section class="section section-alt">
+	<div class="section-inner">
+		<div class="section-header">
+			<h2 class="section-title">What we believe</h2>
+			<p class="section-sub">The principles behind the platform</p>
+		</div>
+		<div class="tenets">
+			{#each tenets as tenet}
+				<div class="tenet">
+					<span class="tenet-mark" aria-hidden="true">&ldquo;</span>
+					<p class="tenet-text">{tenet}</p>
 				</div>
-				<div class="agenda-list">
-					{#each agendas as agenda (agenda.id)}
-						<div class="agenda-card">
-							<div class="agenda-badge" class:lower={agenda.direction === 'lower'}>
-								{#if agenda.direction === 'lower'}
-									<TrendingDown size={12} aria-hidden="true" /> Lower
-								{:else}
-									<TrendingUp size={12} aria-hidden="true" /> Raise
-								{/if}
-							</div>
-							<h3 class="agenda-title">{agenda.title}</h3>
-							<div class="agenda-meta">
-								{#if agenda.target_value}
-									<span class="agenda-target">
-										Target: <strong>{formatCurrency(agenda.target_value)}</strong>
-									</span>
-								{/if}
-								{#if agenda.target_date}
-									<span class="agenda-date">by {agenda.target_date}</span>
-								{/if}
-							</div>
-						</div>
-					{/each}
-				</div>
-			</div>
-		</section>
-	{/if}
-{/if}
+			{/each}
+		</div>
+	</div>
+</section>
+
+<!-- CTA strip -->
+<section class="cta-strip">
+	<div class="cta-strip-inner">
+		<div>
+			<h2 class="cta-strip-title">See it in action</h2>
+			<p class="cta-strip-sub">
+				Explore a live credo tracking housing affordability across the Chicago metro.
+			</p>
+		</div>
+		<a href={resolve('/credo/ed')} class="cta-strip-btn">
+			View example credo
+			<ArrowRight size={15} aria-hidden="true" />
+		</a>
+	</div>
+</section>
 
 <style>
 	/* ── Hero ───────────────────────────────────────────── */
@@ -148,7 +124,6 @@
 		overflow: hidden;
 	}
 
-	/* Subtle data-grid motif — evokes charts and civic infrastructure */
 	.hero::before {
 		content: '';
 		position: absolute;
@@ -160,7 +135,6 @@
 		pointer-events: none;
 	}
 
-	/* Warm glow from accent at bottom-left — echoes the choropleth palette */
 	.hero::after {
 		content: '';
 		position: absolute;
@@ -235,6 +209,7 @@
 	.cta-primary :global(svg) {
 		transition: transform var(--transition-fast);
 	}
+
 	.cta-primary:hover :global(svg) {
 		transform: translateX(3px);
 	}
@@ -245,6 +220,7 @@
 		font-weight: 500;
 		transition: color var(--transition-fast);
 	}
+
 	.cta-ghost:hover {
 		color: white;
 	}
@@ -261,43 +237,6 @@
 			var(--choropleth-2) 50%,
 			transparent 100%
 		);
-	}
-
-	/* ── Loading / Error ─────────────────────────────────── */
-	.loading-state {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: var(--space-3);
-		padding: var(--space-16);
-		color: var(--color-text-muted);
-		font-size: 0.9rem;
-	}
-
-	.spinner {
-		width: 18px;
-		height: 18px;
-		border: 2px solid var(--color-border);
-		border-top-color: var(--color-accent);
-		border-radius: 50%;
-		animation: spin 0.7s linear infinite;
-	}
-
-	@keyframes spin {
-		to {
-			transform: rotate(360deg);
-		}
-	}
-
-	.error-banner {
-		margin: var(--space-8) auto;
-		max-width: 600px;
-		padding: var(--space-4) var(--space-5);
-		background: var(--color-error-bg);
-		border: 1px solid var(--color-error-border);
-		border-radius: var(--radius-lg);
-		color: var(--color-error-text);
-		font-size: 0.9rem;
 	}
 
 	/* ── Sections ────────────────────────────────────────── */
@@ -317,7 +256,7 @@
 	}
 
 	.section-header {
-		margin-bottom: var(--space-8);
+		margin-bottom: var(--space-10);
 	}
 
 	.section-title {
@@ -333,136 +272,130 @@
 		color: var(--color-text-muted);
 	}
 
-	/* ── Geo cards ───────────────────────────────────────── */
-	.card-grid {
+	/* ── How it works ────────────────────────────────────── */
+	.steps {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+		gap: var(--space-8);
+	}
+
+	.step {
+		display: flex;
 		gap: var(--space-4);
 	}
 
-	.geo-card {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-2);
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
-		padding: var(--space-5) var(--space-6);
-		transition:
-			border-color var(--transition-base),
-			box-shadow var(--transition-base),
-			transform var(--transition-base);
-		cursor: pointer;
+	.step-number {
+		font-family: var(--font-serif);
+		font-size: 1.75rem;
+		font-weight: 400;
+		color: var(--color-accent);
+		opacity: 0.6;
+		line-height: 1;
+		flex-shrink: 0;
+		width: 2.5rem;
 	}
 
-	.geo-card:hover {
-		border-color: var(--color-accent);
-		box-shadow: var(--shadow-accent);
-		transform: translateY(-2px);
-	}
-
-	.geo-card-top {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
-
-	.geo-type {
-		font-size: 0.7rem;
-		font-weight: 600;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-		color: var(--color-text-faint);
-	}
-
-	.geo-fips {
-		font-size: 0.7rem;
-		font-family: var(--font-mono);
-		color: var(--color-border-strong);
-	}
-
-	.geo-name {
-		font-size: 1.05rem;
+	.step-title {
+		font-size: 0.95rem;
 		font-weight: 600;
 		color: var(--color-text);
-		line-height: 1.3;
+		margin-bottom: var(--space-2);
 	}
 
-	.geo-metric {
-		font-size: 0.8rem;
+	.step-body {
+		font-size: 0.875rem;
 		color: var(--color-text-muted);
+		line-height: 1.6;
 	}
 
-	.geo-arrow {
-		margin-top: auto;
-		padding-top: var(--space-3);
-		font-size: 0.8rem;
-		font-weight: 500;
-		color: var(--color-accent);
-		opacity: 0;
-		display: flex;
-		align-items: center;
-		gap: 0.25rem;
-		transition: opacity var(--transition-fast);
+	/* ── Beliefs ─────────────────────────────────────────── */
+	.tenets {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: var(--space-4);
 	}
 
-	.geo-card:hover .geo-arrow {
-		opacity: 1;
-	}
-
-	/* ── Agenda cards ────────────────────────────────────── */
-	.agenda-list {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-3);
-	}
-
-	.agenda-card {
+	.tenet {
 		background: var(--color-bg);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-lg);
-		padding: var(--space-5) var(--space-6);
+		padding: var(--space-6);
 		display: flex;
-		flex-direction: column;
-		gap: var(--space-2);
+		gap: var(--space-3);
 	}
 
-	.agenda-badge {
+	.tenet-mark {
+		font-family: var(--font-serif);
+		font-size: 2rem;
+		line-height: 1;
+		color: var(--color-accent);
+		opacity: 0.4;
+		flex-shrink: 0;
+	}
+
+	.tenet-text {
+		font-size: 0.925rem;
+		color: var(--color-text);
+		line-height: 1.65;
+	}
+
+	/* ── CTA strip ───────────────────────────────────────── */
+	.cta-strip {
+		background: var(--color-navy);
+		padding: var(--space-12) var(--space-6);
+	}
+
+	.cta-strip-inner {
+		max-width: var(--max-width);
+		margin: 0 auto;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-8);
+		flex-wrap: wrap;
+	}
+
+	.cta-strip-title {
+		font-family: var(--font-serif);
+		font-size: 1.4rem;
+		font-weight: 400;
+		color: white;
+		margin-bottom: var(--space-2);
+	}
+
+	.cta-strip-sub {
+		font-size: 0.9rem;
+		color: rgba(255, 255, 255, 0.55);
+		max-width: 420px;
+	}
+
+	.cta-strip-btn {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.3rem;
-		font-size: 0.7rem;
-		font-weight: 600;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		padding: 0.2rem 0.6rem;
-		border-radius: var(--radius-sm);
-		background: var(--color-border);
-		color: var(--color-text-muted);
-		width: fit-content;
+		gap: var(--space-2);
+		background: var(--color-accent);
+		color: white;
+		font-weight: 500;
+		font-size: 0.9rem;
+		padding: 0.7rem var(--space-6);
+		border-radius: var(--radius-md);
+		white-space: nowrap;
+		flex-shrink: 0;
+		transition:
+			background var(--transition-fast),
+			transform var(--transition-fast);
 	}
 
-	.agenda-badge.lower {
-		background: var(--color-warn-bg);
-		color: var(--color-warn-text);
+	.cta-strip-btn:hover {
+		background: var(--color-accent-dark);
+		transform: translateY(-1px);
 	}
 
-	.agenda-title {
-		font-size: 1rem;
-		font-weight: 600;
-		color: var(--color-text);
-		line-height: 1.4;
+	.cta-strip-btn :global(svg) {
+		transition: transform var(--transition-fast);
 	}
 
-	.agenda-meta {
-		display: flex;
-		align-items: center;
-		gap: var(--space-4);
-		font-size: 0.85rem;
-		color: var(--color-text-muted);
-	}
-
-	.agenda-target strong {
-		color: var(--color-text);
+	.cta-strip-btn:hover :global(svg) {
+		transform: translateX(3px);
 	}
 </style>

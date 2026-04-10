@@ -1,4 +1,4 @@
-import type { Agenda, AuthToken, Geography, Metric, MetricAggregateResponse, MetricValuesResponse, User } from './types';
+import type { Agenda, AuthToken, Credo, Geography, Metric, MetricAggregateResponse, MetricValuesResponse, User } from './types';
 
 const BASE = '/api/v1';
 
@@ -72,6 +72,12 @@ export async function getMetricAggregate(
 export async function getAgendas(): Promise<Agenda[]> {
 	const res = await fetch(`${BASE}/agendas`);
 	if (!res.ok) throw new Error('Failed to fetch agendas');
+	return res.json();
+}
+
+export async function getCredo(username: string): Promise<Credo> {
+	const res = await fetch(`${BASE}/credos/${username}`);
+	if (!res.ok) throw new Error('Credo not found');
 	return res.json();
 }
 

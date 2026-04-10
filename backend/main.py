@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routes.agendas import router as agendas_router
 from routes.auth import auth_backend, current_active_user, fastapi_users
+from routes.credos import router as credos_router
 from routes.geographies import router as geographies_router
 from routes.metrics import router as metrics_router
 from models.user import User
@@ -39,6 +40,7 @@ app.include_router(
 app.include_router(geographies_router)
 app.include_router(metrics_router)
 app.include_router(agendas_router)
+app.include_router(credos_router)
 
 
 @app.get("/health")

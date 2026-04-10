@@ -5,9 +5,10 @@ export const ssr = false;
 
 export async function load({ url }: { url: URL }) {
 	const metricId = url.searchParams.get('metric') ?? 'median_home_price';
+	const fips = url.searchParams.get('fips') ?? '17031';
 
 	const [seriesResult, aggregateResult, metricsResult] = await Promise.allSettled([
-		getMetricValues('17031', metricId),
+		getMetricValues(fips, metricId),
 		getMetricAggregate(metricId, '17'),
 		getMetrics()
 	]);

@@ -51,6 +51,10 @@
 					href={resolve('/map?fips=17031&metric=median_home_price')}
 					class:active={currentPath === '/map'}>Map</a
 				>
+				<a
+					href={resolve(authState ? `/credo/${authState.user.username}` : '/credo/ed')}
+					class:active={currentPath.startsWith('/credo')}>Credo</a
+				>
 			</nav>
 
 			<button

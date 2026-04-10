@@ -26,15 +26,65 @@ export interface MetricValuesResponse {
 	values: MetricValuePoint[];
 }
 
+export type MeansCategory =
+	| 'incentive'
+	| 'penalty'
+	| 'mandate'
+	| 'boycott'
+	| 'divestment'
+	| 'zoning'
+	| 'litigation'
+	| 'petition'
+	| 'subsidy';
+
+export interface AgendaMeans {
+	id: string;
+	category: MeansCategory;
+	title: string;
+	description: string | null;
+	target: string | null;
+}
+
 export interface Agenda {
 	id: string;
 	title: string;
 	metric_id: string | null;
-	geography_id: string | null;
+	credo_id: string | null;
+	geography_ids: string[];
 	direction: 'lower' | 'raise';
 	target_value: number | null;
 	target_date: string | null;
 	status: string;
+	means: AgendaMeans[];
+}
+
+export interface EntityEvent {
+	id: string;
+	title: string;
+	description: string | null;
+	event_date: string | null;
+	metric_id: string | null;
+	event_impact_score: number | null;
+	source_url: string | null;
+	source_type: string;
+}
+
+export interface Entity {
+	id: string;
+	name: string;
+	type: string;
+	description: string | null;
+	impact_score: number; // credo-specific score
+	events: EntityEvent[];
+}
+
+export interface Credo {
+	id: string;
+	username: string;
+	title: string;
+	description: string | null;
+	agendas: Agenda[];
+	entities: Entity[];
 }
 
 export interface User {
