@@ -45,10 +45,11 @@ credo/
 Then read these as needed:
 
 ```
-docs/implementation/Phase 1 Schema.md   ← authoritative DB schema
-docs/implementation/Phase 1 API.md      ← authoritative API contract
-docs/Decisions.md                       ← architectural decisions log
-docs/Tech Stack.md                      ← infrastructure and library choices
+docs/implementation/Library Architecture.md  ← library-first schema design (Phase 2+)
+docs/implementation/Phase 1 Schema.md        ← historical Phase 1 schema (still valid for existing tables)
+docs/implementation/Phase 1 API.md           ← authoritative API contract
+docs/Decisions.md                            ← architectural decisions log
+docs/Tech Stack.md                           ← infrastructure and library choices
 ```
 
 **Keep `docs/STATUS.md` up to date.** When meaningful progress is made or a session ends mid-task, update the "In Progress / Last Session" and milestone checklist sections.
@@ -56,21 +57,29 @@ docs/Tech Stack.md                      ← infrastructure and library choices
 ## Running Locally
 
 ```bash
-# 1. Start the database (PostGIS on port 5433 — avoids conflict with any local Postgres on 5432)
+# Regular dev start — starts DB, backend, and frontend in one command
+bash dev.sh       # or just: credo  (if .bashrc alias is loaded)
+```
+
+- Backend: http://localhost:8000 (API docs: /docs)
+- Frontend: http://localhost:5173
+- Ctrl+C stops backend + frontend; DB stays running (stop with `docker compose down`)
+
+**First-time / one-off setup steps** (run manually when needed):
+```bash
+# Database
 docker compose up -d
 
-# 2. Backend — from /backend
+# Backend — from /backend
 pip install -e ".[dev]"          # first time only
 cp .env.example .env             # first time only
 alembic upgrade head             # first time, or after new migrations
-uvicorn main:app --reload        # runs on http://localhost:8000
 
-# 3. Load Cook County boundary (one-time, after backend is up)
+# Load Cook County boundary (one-time, after backend is up)
 python scripts/load_cook_county.py
 
-# 4. Frontend — from /frontend
+# Frontend — from /frontend
 npm install                      # first time only
-npm run dev                      # runs on http://localhost:5173
 ```
 
 API docs available at `http://localhost:8000/docs` when backend is running.
@@ -112,11 +121,20 @@ frontend/src/
 |--------|---------|
 | `--color-*` | `--color-navy`, `--color-accent`, `--color-text-muted` |
 | `--choropleth-*` | `--choropleth-1` … `--choropleth-5` (yellow → red map scale) |
-| `--font-*` | `--font-sans`, `--font-serif`, `--font-mono` |
+| `--font-*` | `--font-sans` (Inter Variable), `--font-serif`, `--font-mono` |
 | `--space-*` | `--space-4` (1rem), `--space-8` (2rem), etc. |
 | `--radius-*` | `--radius-sm`, `--radius-md`, `--radius-lg` |
 | `--shadow-*` | `--shadow-md`, `--shadow-accent` |
 | `--transition-*` | `--transition-fast`, `--transition-base` |
+
+### Design System
+
+`DESIGN.md` in the project root contains the Linear-inspired design system — typography, color palette, component specs, and elevation rules. **Reference it when building or modifying any UI.** Key principles:
+
+- **Font**: Inter Variable with `font-feature-settings: "cv01", "ss03"` (set globally in `app.css`)
+- **Weights**: 400 (body), 510 (UI/emphasis), 590 (strong) — avoid 700
+- **Dark surfaces**: near-black backgrounds (`#0f1011`, `#191a1b`) with semi-transparent white borders (`rgba(255,255,255,0.05–0.08)`)
+- **Accent**: red-orange (`--color-accent`) for brand/CTA — tied to the choropleth scale identity
 
 **Component styles** use scoped `<style>` blocks (class names don't leak) but reference `var(--token)` instead of raw hex values:
 

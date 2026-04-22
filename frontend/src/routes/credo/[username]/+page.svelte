@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { ArrowRight, TrendingUp, TrendingDown } from 'lucide-svelte';
-	import type { Entity, Geography, MeansCategory, Metric } from '$lib/types';
+	import type { Entity, Geography, Metric } from '$lib/types';
 	import ActorModal from '$lib/components/ActorModal.svelte';
 
 	let { data } = $props();
@@ -63,16 +63,16 @@
 	};
 
 	// ── Means taxonomy display ───────────────────────────────
-	const MEANS_META: Record<MeansCategory, { label: string; color: string }> = {
-		incentive:  { label: 'Incentive',  color: '#22c55e' },
-		penalty:    { label: 'Penalty',    color: '#f97316' },
-		mandate:    { label: 'Mandate',    color: '#3b82f6' },
-		boycott:    { label: 'Boycott',    color: '#a855f7' },
-		divestment: { label: 'Divestment', color: '#f59e0b' },
-		zoning:     { label: 'Zoning',     color: '#14b8a6' },
-		litigation: { label: 'Litigation', color: '#ef4444' },
-		petition:   { label: 'Petition',   color: '#6b7280' },
-		subsidy:    { label: 'Subsidy',    color: '#84cc16' }
+	const MEANS_COLOR: Record<string, string> = {
+		incentive:  '#22c55e',
+		penalty:    '#f97316',
+		mandate:    '#3b82f6',
+		boycott:    '#a855f7',
+		divestment: '#f59e0b',
+		zoning:     '#14b8a6',
+		litigation: '#ef4444',
+		petition:   '#6b7280',
+		subsidy:    '#84cc16'
 	};
 </script>
 
@@ -82,17 +82,36 @@
 
 <ActorModal entity={selectedActor} onclose={() => (selectedActor = null)} />
 
-<!-- Credo header -->
-<section class="credo-header">
-	<div class="credo-header-inner">
-		<div class="credo-attribution">@{credo.username}</div>
-		<h1 class="credo-title">{credo.title}</h1>
-		{#if credo.description}
-			<p class="credo-desc">{credo.description}</p>
-		{/if}
-	</div>
-	<div class="credo-rule"></div>
-</section>
+<!-- Founding Beliefs -->
+{#if credo.beliefs && credo.beliefs.length > 0}
+	<section class="section section-alt">
+		<div class="section-inner">
+			<div class="section-header">
+				<h2 class="section-title">Founding Beliefs</h2>
+				<p class="section-sub">The foundational premises this credo takes as self-evidently true</p>
+			</div>
+			<ol class="beliefs-list">
+				{#each credo.beliefs as cb, i}
+					<li class="belief-item">
+						<span class="belief-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+						<div class="belief-body">
+							<p class="belief-title">{cb.belief.title}</p>
+							<p class="belief-statement">{cb.belief.statement}</p>
+							<div class="belief-meta">
+								{#if cb.belief.source}
+									<span class="belief-source">{cb.belief.source}</span>
+								{/if}
+								{#if cb.notes}
+									<span class="belief-notes">{cb.notes}</span>
+								{/if}
+							</div>
+						</div>
+					</li>
+				{/each}
+			</ol>
+		</div>
+	</section>
+{/if}
 
 <!-- Agendas -->
 {#if credo.agendas.length > 0}
@@ -165,20 +184,20 @@
 							<div class="agenda-means">
 								<div class="means-heading">How</div>
 								<div class="means-list">
-									{#each agenda.means as m (m.id)}
-										{@const meta = MEANS_META[m.category] ?? { label: m.category, color: '#6b7280' }}
+									{#each agenda.means as am (am.means_id)}
+										{@const color = MEANS_COLOR[am.means.category.id] ?? '#6b7280'}
 										<div class="means-item">
 											<span
 												class="means-badge"
-												style="--badge-color: {meta.color}"
-											>{meta.label}</span>
+												style="--badge-color: {color}"
+											>{am.means.category.label}</span>
 											<div class="means-body">
-												<p class="means-title">{m.title}</p>
-												{#if m.description}
-													<p class="means-desc">{m.description}</p>
+												<p class="means-title">{am.means.title}</p>
+												{#if am.means.description}
+													<p class="means-desc">{am.means.description}</p>
 												{/if}
-												{#if m.target}
-													<p class="means-target">Target: {m.target}</p>
+												{#if am.notes}
+													<p class="means-target">{am.notes}</p>
 												{/if}
 											</div>
 										</div>
@@ -262,71 +281,6 @@
 {/if}
 
 <style>
-	/* ── Credo header ────────────────────────────────────── */
-	.credo-header {
-		background: var(--color-navy);
-		color: white;
-		padding: var(--space-14) var(--space-6) var(--space-12);
-		position: relative;
-		overflow: hidden;
-	}
-
-	.credo-header::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background-image:
-			linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
-		background-size: 52px 52px;
-		pointer-events: none;
-	}
-
-	.credo-header-inner {
-		position: relative;
-		z-index: 1;
-		max-width: var(--max-width-text);
-		margin: 0 auto;
-	}
-
-	.credo-attribution {
-		font-size: 0.75rem;
-		font-weight: 600;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-		color: var(--color-accent);
-		margin-bottom: var(--space-3);
-	}
-
-	.credo-title {
-		font-family: var(--font-serif);
-		font-size: clamp(1.75rem, 4vw, 2.5rem);
-		font-weight: 400;
-		line-height: 1.2;
-		margin-bottom: var(--space-4);
-	}
-
-	.credo-desc {
-		font-size: 0.975rem;
-		color: rgba(255, 255, 255, 0.6);
-		max-width: 560px;
-		line-height: 1.7;
-	}
-
-	.credo-rule {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		height: 3px;
-		background: linear-gradient(
-			90deg,
-			var(--color-accent) 0%,
-			var(--choropleth-2) 50%,
-			transparent 100%
-		);
-	}
-
 	/* ── Sections ────────────────────────────────────────── */
 	.section {
 		padding: var(--space-16) var(--space-6);
@@ -358,6 +312,79 @@
 	.section-sub {
 		font-size: 0.9rem;
 		color: var(--color-text-muted);
+	}
+
+	/* ── Founding beliefs ───────────────────────────────── */
+	.beliefs-list {
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+		padding: 0;
+		margin: 0;
+		max-width: var(--max-width-text);
+	}
+
+	.belief-item {
+		display: flex;
+		gap: var(--space-5);
+		align-items: flex-start;
+	}
+
+	.belief-num {
+		flex-shrink: 0;
+		font-family: var(--font-mono);
+		font-size: 1.1rem;
+		font-weight: 700;
+		color: var(--color-accent);
+		opacity: 0.7;
+		letter-spacing: -0.02em;
+		padding-top: 0.1rem;
+		min-width: 2rem;
+	}
+
+	.belief-body {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+	}
+
+	.belief-title {
+		font-size: 1rem;
+		font-weight: 600;
+		color: var(--color-text);
+		line-height: 1.4;
+	}
+
+	.belief-statement {
+		font-size: 0.875rem;
+		color: var(--color-text-muted);
+		line-height: 1.65;
+		max-width: 600px;
+	}
+
+	.belief-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+		align-items: center;
+	}
+
+	.belief-source {
+		font-size: 0.7rem;
+		font-weight: 600;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		padding: 0.15rem 0.5rem;
+		border-radius: var(--radius-sm);
+		background: var(--color-border);
+		color: var(--color-text-faint);
+	}
+
+	.belief-notes {
+		font-size: 0.8rem;
+		color: var(--color-text-faint);
+		font-style: italic;
 	}
 
 	/* ── Area filter ─────────────────────────────────────── */

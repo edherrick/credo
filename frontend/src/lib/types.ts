@@ -26,23 +26,35 @@ export interface MetricValuesResponse {
 	values: MetricValuePoint[];
 }
 
-export type MeansCategory =
-	| 'incentive'
-	| 'penalty'
-	| 'mandate'
-	| 'boycott'
-	| 'divestment'
-	| 'zoning'
-	| 'litigation'
-	| 'petition'
-	| 'subsidy';
-
-export interface AgendaMeans {
+export interface MeansCategory {
 	id: string;
-	category: MeansCategory;
+	label: string;
+	family: string;
+	description: string | null;
+}
+
+export interface MeansEvidence {
+	id: string;
 	title: string;
 	description: string | null;
-	target: string | null;
+	source_url: string | null;
+	geography_id: string | null;
+	outcome: string | null;
+}
+
+export interface Means {
+	id: string;
+	title: string;
+	description: string | null;
+	category: MeansCategory;
+	canonical: boolean;
+	evidence: MeansEvidence[];
+}
+
+export interface AgendaMeans {
+	means_id: string;
+	notes: string | null;
+	means: Means;
 }
 
 export interface Agenda {
@@ -56,6 +68,29 @@ export interface Agenda {
 	target_date: string | null;
 	status: string;
 	means: AgendaMeans[];
+}
+
+export interface Belief {
+	id: string;
+	title: string;
+	statement: string;
+	category: string;
+	source: string | null;
+	canonical: boolean;
+}
+
+export interface CredoBelief {
+	belief: Belief;
+	display_order: number;
+	notes: string | null;
+}
+
+export interface Axis {
+	id: string;
+	label: string;
+	description: string | null;
+	family: string;
+	canonical: boolean;
 }
 
 export interface EntityEvent {
@@ -78,13 +113,40 @@ export interface Entity {
 	events: EntityEvent[];
 }
 
+export interface EntityDetail {
+	id: string;
+	name: string;
+	slug: string | null;
+	type: string;
+	description: string | null;
+	wikidata_id: string | null;
+	events: EntityEvent[];
+}
+
 export interface Credo {
 	id: string;
 	username: string;
 	title: string;
 	description: string | null;
+	beliefs: CredoBelief[];
 	agendas: Agenda[];
 	entities: Entity[];
+}
+
+export interface CredoSummary {
+	id: string;
+	username: string;
+	title: string;
+	description: string | null;
+	created_at: string;
+}
+
+export interface Issue {
+	id: string;
+	title: string;
+	description: string | null;
+	category: string | null;
+	canonical: boolean;
 }
 
 export interface User {

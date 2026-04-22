@@ -6,8 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from database import get_db
-from models.agenda import Agenda, AgendaMeans
-from schemas.agenda import AgendaMeansOut, AgendaOut
+from models.agenda import Agenda, AgendaMeans, Means
+from schemas.agenda import AgendaMeansOut, AgendaOut, MeansCategoryOut, MeansEvidenceOut, MeansOut
 
 router = APIRouter(prefix="/api/v1/agendas", tags=["agendas"])
 
@@ -24,17 +24,45 @@ async def list_agendas(db: AsyncSession = Depends(get_db)) -> list[AgendaOut]:
     agenda_ids = [a.id for a in agendas]
     means_by_agenda: dict = defaultdict(list)
     if agenda_ids:
-        means_result = await db.scalars(
-            select(AgendaMeans).where(AgendaMeans.agenda_id.in_(agenda_ids))
+        # Load junction rows; Means + MeansCategory + MeansEvidence are
+        # eager-loaded via the relationships defined on AgendaMeans and Means.
+        junction_result = await db.scalars(
+            select(AgendaMeans)
+            .where(AgendaMeans.agenda_id.in_(agenda_ids))
+            .options(
+                selectinload(AgendaMeans.means).selectinload(Means.category),
+                selectinload(AgendaMeans.means).selectinload(Means.evidence),
+            )
         )
-        for m in means_result.all():
-            means_by_agenda[m.agenda_id].append(
+        for jrow in junction_result.all():
+            m = jrow.means
+            means_by_agenda[jrow.agenda_id].append(
                 AgendaMeansOut(
-                    id=m.id,
-                    category=m.category,
-                    title=m.title,
-                    description=m.description,
-                    target=m.target,
+                    means_id=m.id,
+                    notes=jrow.notes,
+                    means=MeansOut(
+                        id=m.id,
+                        title=m.title,
+                        description=m.description,
+                        canonical=m.canonical,
+                        category=MeansCategoryOut(
+                            id=m.category.id,
+                            label=m.category.label,
+                            family=m.category.family,
+                            description=m.category.description,
+                        ),
+                        evidence=[
+                            MeansEvidenceOut(
+                                id=e.id,
+                                title=e.title,
+                                description=e.description,
+                                source_url=e.source_url,
+                                geography_id=e.geography_id,
+                                outcome=e.outcome,
+                            )
+                            for e in m.evidence
+                        ],
+                    ),
                 )
             )
 

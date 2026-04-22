@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import { getMetricGeoJSON, getStateMetricGeoJSON } from '../api';
 	import { theme } from '$lib/stores/theme';
 	import { ScanSearch } from 'lucide-svelte';
@@ -21,6 +22,11 @@
 	let { metricId, geographyId, stateFips, values, selectedIndex, collapsed = false, onchange }: Props = $props();
 
 	let map: import('leaflet').Map | undefined;
+
+	onDestroy(() => {
+		map?.remove();
+		map = undefined;
+	});
 	let leaflet = $state<typeof import('leaflet') | null>(null);
 	let mapReady = $state(false);
 	// Track the last date loaded to prevent the $effect from double-loading on initial mount

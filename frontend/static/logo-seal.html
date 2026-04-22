@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Credo — Seal Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0f1011;
+    color: #f7f8f8;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-feature-settings: "cv01","ss03";
+    padding: 48px 40px 80px;
+  }
+  .page-label {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #3d4047; margin-bottom: 56px;
+  }
+
+  .section { margin-bottom: 4px; }
+  .section-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: #3d4047;
+    padding: 0 0 12px 0;
+  }
+
+  .variants {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+  }
+  .variant {
+    background: #191a1b;
+    padding: 36px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-height: 340px;
+  }
+  .variant-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #62666d;
+  }
+  .variant-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 20px;
+  }
+  .variant-desc {
+    font-size: 12px; color: #4a4f57; line-height: 1.65;
+  }
+
+  /* Lockup section */
+  .lockups {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .lockup-card {
+    background: #191a1b;
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    align-items: flex-start;
+  }
+  .lockup-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #62666d;
+  }
+  .lockup-mark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .wordmark {
+    font-size: 17px; font-weight: 510; color: #f7f8f8; letter-spacing: -0.03em;
+  }
+  .lockup-desc {
+    font-size: 12px; color: #4a4f57; line-height: 1.65;
+  }
+
+  /* Nav sim */
+  .nav-row {
+    display: flex;
+    gap: 2px;
+    margin-top: 2px;
+  }
+  .nav-sim {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: #0f1011;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 4px;
+  }
+  .nav-wordmark {
+    font-size: 14px; font-weight: 510; color: #f7f8f8; letter-spacing: -0.025em;
+  }
+
+  .divider { height: 2px; background: #0f1011; margin: 40px 0; }
+</style>
+</head>
+<body>
+
+<div class="page-label">Credo — Seal Mark Exploration</div>
+
+<!-- SEAL VARIANTS -->
+<div class="section">
+  <div class="variants">
+
+    <!-- A: SOLID IMPRINT -->
+    <div class="variant">
+      <div class="variant-label">A — Solid Imprint</div>
+      <div class="variant-center" style="flex-direction: column; gap: 16px;">
+        <!-- Large -->
+        <svg width="72" height="72" viewBox="0 0 52 56" fill="none">
+          <circle cx="26" cy="26" r="23" fill="#7170ff"/>
+          <path d="M17 21 C17 13 21 8 26.5 8 C32 8 36 13 36 18 C36 24 30 26.5 28 31 L28 36"
+            stroke="white" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <circle cx="28" cy="43" r="3.2" fill="white"/>
+        </svg>
+        <!-- Small -->
+        <svg width="28" height="28" viewBox="0 0 52 56" fill="none">
+          <circle cx="26" cy="26" r="23" fill="#7170ff"/>
+          <path d="M17 21 C17 13 21 8 26.5 8 C32 8 36 13 36 18 C36 24 30 26.5 28 31 L28 36"
+            stroke="white" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <circle cx="28" cy="43" r="3.2" fill="white"/>
+        </svg>
+      </div>
+      <div class="variant-desc">Full indigo disc. The ? is pressed in — white as the void left by the stamp. Maximum contrast, reads instantly at any size.</div>
+    </div>
+
+    <!-- B: RING SEAL -->
+    <div class="variant">
+      <div class="variant-label">B — Ring Seal</div>
+      <div class="variant-center" style="flex-direction: column; gap: 16px;">
+        <svg width="72" height="72" viewBox="0 0 52 56" fill="none">
+          <!-- Outer ring -->
+          <circle cx="26" cy="26" r="23" stroke="#7170ff" stroke-width="2.5" fill="none"/>
+          <!-- Inner ring — double border like a notary stamp -->
+          <circle cx="26" cy="26" r="19" stroke="#7170ff" stroke-width="1" stroke-dasharray="1.5 3" fill="none" opacity="0.5"/>
+          <!-- ? inside -->
+          <path d="M17 22 C17 14 21 9 26.5 9 C32 9 36 14 36 19 C36 25 30 27.5 28 31.5 L28 36"
+            stroke="#7170ff" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <circle cx="28" cy="43" r="3" fill="#7170ff"/>
+        </svg>
+        <svg width="28" height="28" viewBox="0 0 52 56" fill="none">
+          <circle cx="26" cy="26" r="23" stroke="#7170ff" stroke-width="2.5" fill="none"/>
+          <circle cx="26" cy="26" r="19" stroke="#7170ff" stroke-width="1" stroke-dasharray="1.5 3" fill="none" opacity="0.5"/>
+          <path d="M17 22 C17 14 21 9 26.5 9 C32 9 36 14 36 19 C36 25 30 27.5 28 31.5 L28 36"
+            stroke="#7170ff" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <circle cx="28" cy="43" r="3" fill="#7170ff"/>
+        </svg>
+      </div>
+      <div class="variant-desc">Open ring with a dotted inner border — like a rubber stamp or notary embosser. Lighter, more editorial.</div>
+    </div>
+
+    <!-- C: OFFICIAL CIVIC SEAL (text around ring) -->
+    <div class="variant">
+      <div class="variant-label">C — Civic Seal</div>
+      <div class="variant-center" style="flex-direction: column; gap: 16px;">
+        <svg width="72" height="72" viewBox="0 0 56 56" fill="none">
+          <!-- Outer ring -->
+          <circle cx="28" cy="28" r="26" stroke="#7170ff" stroke-width="1.5" fill="none" opacity="0.4"/>
+          <!-- Text path around ring -->
+          <defs>
+            <path id="tp" d="M28,5 a23,23 0 1,1 -0.01,0 Z"/>
+          </defs>
+          <text font-family="'Inter',system-ui" font-size="5.5" font-weight="600" fill="#7170ff" letter-spacing="3.2" opacity="0.7">
+            <textPath href="#tp" startOffset="10%">CREDO · CIVIC · RECORD</textPath>
+          </text>
+          <!-- Inner circle -->
+          <circle cx="28" cy="28" r="16" stroke="#7170ff" stroke-width="1.2" fill="none" opacity="0.25"/>
+          <!-- ? centered inside inner circle -->
+          <path d="M21 24 C21 18 24.5 14 28.5 14 C32.5 14 35.5 17.5 35.5 21.5 C35.5 25.5 31 27.5 29 31 L29 34"
+            stroke="#7170ff" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <circle cx="29" cy="40" r="2.5" fill="#7170ff"/>
+        </svg>
+        <svg width="28" height="28" viewBox="0 0 56 56" fill="none">
+          <circle cx="28" cy="28" r="26" stroke="#7170ff" stroke-width="1.5" fill="none" opacity="0.4"/>
+          <circle cx="28" cy="28" r="16" stroke="#7170ff" stroke-width="1.2" fill="none" opacity="0.25"/>
+          <path d="M21 24 C21 18 24.5 14 28.5 14 C32.5 14 35.5 17.5 35.5 21.5 C35.5 25.5 31 27.5 29 31 L29 34"
+            stroke="#7170ff" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <circle cx="29" cy="40" r="2.5" fill="#7170ff"/>
+        </svg>
+      </div>
+      <div class="variant-desc">Full official seal — "CREDO · CIVIC · RECORD" running around the ring. Like a courthouse or municipality mark. Loses detail small but magnificent large.</div>
+    </div>
+
+    <!-- D: HALF-FILLED / STAMPED IMPRESSION -->
+    <div class="variant">
+      <div class="variant-label">D — Stamp Ghost</div>
+      <div class="variant-center" style="flex-direction: column; gap: 16px;">
+        <svg width="72" height="72" viewBox="0 0 52 56" fill="none">
+          <!-- Circle fill — low opacity, like a faded stamp -->
+          <circle cx="26" cy="26" r="23" fill="#7170ff" opacity="0.15"/>
+          <!-- Circle border — full opacity -->
+          <circle cx="26" cy="26" r="23" stroke="#7170ff" stroke-width="2" fill="none"/>
+          <!-- ? inside — full opacity solid -->
+          <path d="M17 21 C17 13 21 8 26.5 8 C32 8 36 13 36 18 C36 24 30 26.5 28 31 L28 36"
+            stroke="#7170ff" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+          <circle cx="28" cy="43" r="3.2" fill="#7170ff"/>
+        </svg>
+        <svg width="28" height="28" viewBox="0 0 52 56" fill="none">
+          <circle cx="26" cy="26" r="23" fill="#7170ff" opacity="0.15"/>
+          <circle cx="26" cy="26" r="23" stroke="#7170ff" stroke-width="2" fill="none"/>
+          <path d="M17 21 C17 13 21 8 26.5 8 C32 8 36 13 36 18 C36 24 30 26.5 28 31 L28 36"
+            stroke="#7170ff" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+          <circle cx="28" cy="43" r="3.2" fill="#7170ff"/>
+        </svg>
+      </div>
+      <div class="variant-desc">Ghost fill — the seal impression that hasn't fully set. The circle and ? share the same indigo, with a tinted fill. Like fresh wax still cooling.</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- LOCKUP ARRANGEMENTS -->
+<div class="section">
+  <div class="section-label" style="padding-bottom: 12px;">Lockup arrangements</div>
+  <div class="lockups">
+
+    <!-- Lockup 1: Seal A + wordmark, horizontal -->
+    <div class="lockup-card">
+      <div class="lockup-label">Horizontal · Seal A</div>
+      <div class="lockup-mark">
+        <svg width="34" height="34" viewBox="0 0 52 56" fill="none">
+          <circle cx="26" cy="26" r="23" fill="#7170ff"/>
+          <path d="M17 21 C17 13 21 8 26.5 8 C32 8 36 13 36 18 C36 24 30 26.5 28 31 L28 36"
+            stroke="white" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <circle cx="28" cy="43" r="3.2" fill="white"/>
+        </svg>
+        <span class="wordmark">Credo</span>
+      </div>
+      <div class="lockup-desc">Bold and direct. The indigo disc anchors the wordmark. Works as the primary nav logo.</div>
+    </div>
+
+    <!-- Lockup 2: Seal C (civic) + wordmark stacked -->
+    <div class="lockup-card">
+      <div class="lockup-label">Stacked · Civic Seal</div>
+      <div class="lockup-mark" style="flex-direction: column; gap: 12px; align-items: center;">
+        <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+          <circle cx="28" cy="28" r="26" stroke="#7170ff" stroke-width="1.5" fill="none" opacity="0.4"/>
+          <defs>
+            <path id="tp2" d="M28,5 a23,23 0 1,1 -0.01,0 Z"/>
+          </defs>
+          <text font-family="'Inter',system-ui" font-size="5.5" font-weight="600" fill="#7170ff" letter-spacing="3.2" opacity="0.7">
+            <textPath href="#tp2" startOffset="10%">CREDO · CIVIC · RECORD</textPath>
+          </text>
+          <circle cx="28" cy="28" r="16" stroke="#7170ff" stroke-width="1.2" fill="none" opacity="0.25"/>
+          <path d="M21 24 C21 18 24.5 14 28.5 14 C32.5 14 35.5 17.5 35.5 21.5 C35.5 25.5 31 27.5 29 31 L29 34"
+            stroke="#7170ff" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <circle cx="29" cy="40" r="2.5" fill="#7170ff"/>
+        </svg>
+      </div>
+      <div class="lockup-desc">The seal is self-contained — the word "Credo" runs inside the ring. Used standalone as a badge or avatar.</div>
+    </div>
+
+    <!-- Lockup 3: Seal D (ghost) + separated wordmark -->
+    <div class="lockup-card">
+      <div class="lockup-label">Separated · Ghost Seal</div>
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <svg width="34" height="34" viewBox="0 0 52 56" fill="none">
+          <circle cx="26" cy="26" r="23" fill="#7170ff" opacity="0.15"/>
+          <circle cx="26" cy="26" r="23" stroke="#7170ff" stroke-width="2" fill="none"/>
+          <path d="M17 21 C17 13 21 8 26.5 8 C32 8 36 13 36 18 C36 24 30 26.5 28 31 L28 36"
+            stroke="#7170ff" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+          <circle cx="28" cy="43" r="3.2" fill="#7170ff"/>
+        </svg>
+        <div>
+          <div style="font-size: 17px; font-weight: 510; color: #f7f8f8; letter-spacing: -0.03em; line-height: 1.2;">Credo</div>
+          <div style="font-size: 10px; color: #62666d; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; margin-top: 2px;">Civic Record</div>
+        </div>
+      </div>
+      <div class="lockup-desc">Ghost seal with wordmark + tagline. The two-line lockup gives it a more institutional feel — like a government publication.</div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV SIMULATIONS -->
+<div class="nav-row" style="margin-top: 2px;">
+  <div class="nav-sim">
+    <svg width="26" height="26" viewBox="0 0 52 56" fill="none">
+      <circle cx="26" cy="26" r="23" fill="#7170ff"/>
+      <path d="M17 21 C17 13 21 8 26.5 8 C32 8 36 13 36 18 C36 24 30 26.5 28 31 L28 36"
+        stroke="white" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+      <circle cx="28" cy="43" r="3.2" fill="white"/>
+    </svg>
+    <span class="nav-wordmark">Credo</span>
+    <span style="font-size: 12px; color: #3d4047; margin-left: 4px;">— A (solid)</span>
+  </div>
+  <div class="nav-sim">
+    <svg width="26" height="26" viewBox="0 0 52 56" fill="none">
+      <circle cx="26" cy="26" r="23" stroke="#7170ff" stroke-width="2.5" fill="none"/>
+      <circle cx="26" cy="26" r="19" stroke="#7170ff" stroke-width="1" stroke-dasharray="1.5 3" fill="none" opacity="0.5"/>
+      <path d="M17 22 C17 14 21 9 26.5 9 C32 9 36 14 36 19 C36 25 30 27.5 28 31.5 L28 36"
+        stroke="#7170ff" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+      <circle cx="28" cy="43" r="3" fill="#7170ff"/>
+    </svg>
+    <span class="nav-wordmark">Credo</span>
+    <span style="font-size: 12px; color: #3d4047; margin-left: 4px;">— B (ring)</span>
+  </div>
+  <div class="nav-sim">
+    <svg width="26" height="26" viewBox="0 0 52 56" fill="none">
+      <circle cx="26" cy="26" r="23" fill="#7170ff" opacity="0.15"/>
+      <circle cx="26" cy="26" r="23" stroke="#7170ff" stroke-width="2" fill="none"/>
+      <path d="M17 21 C17 13 21 8 26.5 8 C32 8 36 13 36 18 C36 24 30 26.5 28 31 L28 36"
+        stroke="#7170ff" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+      <circle cx="28" cy="43" r="3.2" fill="#7170ff"/>
+    </svg>
+    <span class="nav-wordmark">Credo</span>
+    <span style="font-size: 12px; color: #3d4047; margin-left: 4px;">— D (ghost)</span>
+  </div>
+</div>
+
+</body>
+</html>

@@ -39,6 +39,7 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+temp-docks/
 
 # ── Docker ────────────────────────────────────────────────────────────────────
 # docker-compose.override.yml is typically local-only

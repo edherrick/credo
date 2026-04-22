@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Credo — Question Mark Concepts</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0f1011;
+    color: #f7f8f8;
+    font-family: system-ui, sans-serif;
+    padding: 48px 32px;
+  }
+  h1 {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #62666d; margin-bottom: 48px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+  }
+  .card {
+    background: #191a1b;
+    padding: 40px 36px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    min-height: 360px;
+  }
+  .card-header { display: flex; align-items: baseline; gap: 12px; }
+  .card-name { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8a8f98; }
+  .card-tag { font-size: 11px; color: #3d4047; font-style: italic; }
+  .sizes {
+    display: flex; align-items: flex-end; gap: 24px;
+  }
+  .size-group { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .size-label { font-size: 10px; color: #3d4047; }
+  .card-desc { font-size: 13px; color: #62666d; line-height: 1.7; flex: 1; }
+  .nav-sim {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px;
+    background: #0f1011;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 6px;
+    width: 100%;
+  }
+  .nav-sim-name { font-size: 14px; font-weight: 500; color: #f7f8f8; letter-spacing: -0.02em; }
+  .card-idea { font-size: 11px; color: #5e6ad2; font-style: italic; }
+
+  /* Full-width recommendation card */
+  .rec-card {
+    margin-top: 2px;
+    background: #1a1b2e;
+    border: 1px solid rgba(113,112,255,0.2);
+    padding: 40px 36px 36px;
+    display: flex;
+    gap: 48px;
+    align-items: flex-start;
+  }
+  .rec-left { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+  .rec-right { display: flex; flex-direction: column; gap: 20px; align-items: flex-start; }
+  .rec-label { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #7170ff; margin-bottom: 4px; }
+  .rec-title { font-size: 18px; font-weight: 500; color: #f7f8f8; letter-spacing: -0.02em; }
+  .rec-desc { font-size: 13px; color: #8a8f98; line-height: 1.75; max-width: 420px; }
+  .rec-sizes { display: flex; align-items: flex-end; gap: 24px; }
+</style>
+</head>
+<body>
+<h1>Credo — Question Mark Directions</h1>
+<div class="grid">
+
+  <!-- A: QUILL QUESTION -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-name">A — Quill</span>
+      <span class="card-tag">question becoming inscription</span>
+    </div>
+    <div class="sizes">
+      <div class="size-group">
+        <svg width="52" height="52" viewBox="0 0 48 52" fill="none">
+          <!-- Hook of question mark, calligraphic -->
+          <path d="M12 18 C12 9 18 4 25 4 C32 4 36 9 36 15 C36 22 29 25 26 31 L26 36"
+            stroke="#7170ff" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <!-- Nib — the tail becomes a pen point -->
+          <path d="M26 36 L23 44 L26 41 L29 44 Z"
+            fill="#7170ff"/>
+          <!-- Wax-dot displaced below nib -->
+          <circle cx="26" cy="49" r="2.2" fill="#7170ff" opacity="0.45"/>
+        </svg>
+        <span class="size-label">52px</span>
+      </div>
+      <div class="size-group">
+        <svg width="30" height="30" viewBox="0 0 48 52" fill="none">
+          <path d="M12 18 C12 9 18 4 25 4 C32 4 36 9 36 15 C36 22 29 25 26 31 L26 36"
+            stroke="#7170ff" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <path d="M26 36 L23 44 L26 41 L29 44 Z" fill="#7170ff"/>
+          <circle cx="26" cy="49" r="2.2" fill="#7170ff" opacity="0.45"/>
+        </svg>
+        <span class="size-label">30px</span>
+      </div>
+      <div class="size-group">
+        <svg width="20" height="20" viewBox="0 0 48 52" fill="none">
+          <path d="M12 18 C12 9 18 4 25 4 C32 4 36 9 36 15 C36 22 29 25 26 31 L26 36"
+            stroke="#7170ff" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <path d="M26 36 L23 44 L26 41 L29 44 Z" fill="#7170ff"/>
+          <circle cx="26" cy="49" r="2.2" fill="#7170ff" opacity="0.45"/>
+        </svg>
+        <span class="size-label">20px</span>
+      </div>
+    </div>
+    <div class="card-desc">
+      The question mark's descending stroke tapers into a quill nib — the act of inquiry becoming inscription. Your belief is not just held, it's written down. The ghost-dot below is the breath after commitment.
+    </div>
+    <div class="nav-sim">
+      <svg width="22" height="22" viewBox="0 0 48 52" fill="none">
+        <path d="M12 18 C12 9 18 4 25 4 C32 4 36 9 36 15 C36 22 29 25 26 31 L26 36"
+          stroke="#7170ff" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+        <path d="M26 36 L23 44 L26 41 L29 44 Z" fill="#7170ff"/>
+        <circle cx="26" cy="49" r="2.2" fill="#7170ff" opacity="0.45"/>
+      </svg>
+      <span class="nav-sim-name">Credo</span>
+    </div>
+    <div class="card-idea">"I believe" — and I can prove it in writing</div>
+  </div>
+
+  <!-- B: SIGNATURE LINE -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-name">B — Signature</span>
+      <span class="card-tag">commitment on record</span>
+    </div>
+    <div class="sizes">
+      <div class="size-group">
+        <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+          <!-- Question mark -->
+          <path d="M14 18 C14 9 20 4 27 4 C34 4 38 9 38 15 C38 22 31 25 28 31 L28 37"
+            stroke="#f7f8f8" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <!-- Dot in indigo -->
+          <circle cx="28" cy="43" r="3" fill="#7170ff"/>
+          <!-- Signature baseline -->
+          <line x1="4" y1="49" x2="48" y2="49" stroke="rgba(113,112,255,0.35)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span class="size-label">52px</span>
+      </div>
+      <div class="size-group">
+        <svg width="30" height="30" viewBox="0 0 52 52" fill="none">
+          <path d="M14 18 C14 9 20 4 27 4 C34 4 38 9 38 15 C38 22 31 25 28 31 L28 37"
+            stroke="#f7f8f8" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <circle cx="28" cy="43" r="3" fill="#7170ff"/>
+          <line x1="4" y1="49" x2="48" y2="49" stroke="rgba(113,112,255,0.35)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span class="size-label">30px</span>
+      </div>
+      <div class="size-group">
+        <svg width="20" height="20" viewBox="0 0 52 52" fill="none">
+          <path d="M14 18 C14 9 20 4 27 4 C34 4 38 9 38 15 C38 22 31 25 28 31 L28 37"
+            stroke="#f7f8f8" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <circle cx="28" cy="43" r="3" fill="#7170ff"/>
+          <line x1="4" y1="49" x2="48" y2="49" stroke="rgba(113,112,255,0.35)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span class="size-label">20px</span>
+      </div>
+    </div>
+    <div class="card-desc">
+      The question mark in white above a signature baseline — the moment before commitment. The indigo dot sits on the line like a period pressed down. "Sign here. What do you believe?" Policy is a signature.
+    </div>
+    <div class="nav-sim">
+      <svg width="22" height="22" viewBox="0 0 52 52" fill="none">
+        <path d="M14 18 C14 9 20 4 27 4 C34 4 38 9 38 15 C38 22 31 25 28 31 L28 37"
+          stroke="#f7f8f8" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+        <circle cx="28" cy="43" r="3" fill="#7170ff"/>
+        <line x1="4" y1="49" x2="48" y2="49" stroke="rgba(113,112,255,0.35)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <span class="nav-sim-name">Credo</span>
+    </div>
+    <div class="card-idea">Policy is a signature — put your name on it</div>
+  </div>
+
+  <!-- C: WAX SEAL DOT -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-name">C — Seal</span>
+      <span class="card-tag">certified conviction</span>
+    </div>
+    <div class="sizes">
+      <div class="size-group">
+        <svg width="52" height="52" viewBox="0 0 48 52" fill="none">
+          <!-- Question mark, stroke only -->
+          <path d="M11 17 C11 8 17 3 24 3 C31 3 36 8 36 14 C36 21 29 24 26 30 L26 35"
+            stroke="#f7f8f8" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <!-- Wax seal — oversized, emphatic dot -->
+          <circle cx="26" cy="46" r="5.5" fill="#7170ff"/>
+          <!-- Tiny inner cross on the seal — civic mark -->
+          <line x1="26" y1="43" x2="26" y2="49" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="23" y1="46" x2="29" y2="46" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        <span class="size-label">52px</span>
+      </div>
+      <div class="size-group">
+        <svg width="30" height="30" viewBox="0 0 48 52" fill="none">
+          <path d="M11 17 C11 8 17 3 24 3 C31 3 36 8 36 14 C36 21 29 24 26 30 L26 35"
+            stroke="#f7f8f8" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <circle cx="26" cy="46" r="5.5" fill="#7170ff"/>
+          <line x1="26" y1="43" x2="26" y2="49" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="23" y1="46" x2="29" y2="46" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        <span class="size-label">30px</span>
+      </div>
+      <div class="size-group">
+        <svg width="20" height="20" viewBox="0 0 48 52" fill="none">
+          <path d="M11 17 C11 8 17 3 24 3 C31 3 36 8 36 14 C36 21 29 24 26 30 L26 35"
+            stroke="#f7f8f8" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <circle cx="26" cy="46" r="5.5" fill="#7170ff"/>
+          <line x1="26" y1="43" x2="26" y2="49" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="23" y1="46" x2="29" y2="46" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        <span class="size-label">20px</span>
+      </div>
+    </div>
+    <div class="card-desc">
+      The dot is a wax seal — an oversized, emphatic stamp of certification. The question is posed in white, but the dot beneath it is an official civic mark. This belief has been sealed. Permanent.
+    </div>
+    <div class="nav-sim">
+      <svg width="22" height="22" viewBox="0 0 48 52" fill="none">
+        <path d="M11 17 C11 8 17 3 24 3 C31 3 36 8 36 14 C36 21 29 24 26 30 L26 35"
+          stroke="#f7f8f8" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+        <circle cx="26" cy="46" r="5.5" fill="#7170ff"/>
+        <line x1="26" y1="43" x2="26" y2="49" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="23" y1="46" x2="29" y2="46" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      <span class="nav-sim-name">Credo</span>
+    </div>
+    <div class="card-idea">The question asked — the answer certified</div>
+  </div>
+
+  <!-- D: SINGLE FLOWING STROKE -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-name">D — Single Stroke</span>
+      <span class="card-tag">the act of writing itself</span>
+    </div>
+    <div class="sizes">
+      <div class="size-group">
+        <svg width="52" height="52" viewBox="0 0 44 52" fill="none">
+          <!-- One continuous calligraphic stroke, no separate dot — just the mark itself -->
+          <path d="M10 16 C10 7 17 2 23 2 C30 2 35 7 35 13 C35 20 28 23 25 29 C25 29 24 31 24 34 C24 36 24 38 24 40 C24 42 24 43 23 44 C22 45 21 46 22 48 C23 50 25 50 25 48"
+            stroke="#7170ff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        <span class="size-label">52px</span>
+      </div>
+      <div class="size-group">
+        <svg width="30" height="30" viewBox="0 0 44 52" fill="none">
+          <path d="M10 16 C10 7 17 2 23 2 C30 2 35 7 35 13 C35 20 28 23 25 29 C25 29 24 31 24 34 C24 36 24 38 24 40 C24 42 24 43 23 44 C22 45 21 46 22 48 C23 50 25 50 25 48"
+            stroke="#7170ff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        <span class="size-label">30px</span>
+      </div>
+      <div class="size-group">
+        <svg width="20" height="20" viewBox="0 0 44 52" fill="none">
+          <path d="M10 16 C10 7 17 2 23 2 C30 2 35 7 35 13 C35 20 28 23 25 29 C25 29 24 31 24 34 C24 36 24 38 24 40 C24 42 24 43 23 44 C22 45 21 46 22 48 C23 50 25 50 25 48"
+            stroke="#7170ff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        <span class="size-label">20px</span>
+      </div>
+    </div>
+    <div class="card-desc">
+      One unbroken calligraphic path. No separate dot — the mark terminates in a small upward curl, like a pen lifting from paper. The whole mark is the act of writing. Pure gesture. Maximum tension.
+    </div>
+    <div class="nav-sim">
+      <svg width="22" height="22" viewBox="0 0 44 52" fill="none">
+        <path d="M10 16 C10 7 17 2 23 2 C30 2 35 7 35 13 C35 20 28 23 25 29 C25 29 24 31 24 34 C24 36 24 38 24 40 C24 42 24 43 23 44 C22 45 21 46 22 48 C23 50 25 50 25 48"
+          stroke="#7170ff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      <span class="nav-sim-name">Credo</span>
+    </div>
+    <div class="card-idea">A single gesture — writing and believing are the same act</div>
+  </div>
+
+</div>
+
+<!-- RECOMMENDATION -->
+<div class="rec-card">
+  <div class="rec-left">
+    <div>
+      <div class="rec-label">My recommendation</div>
+      <div class="rec-title">C — The Wax Seal, refined</div>
+    </div>
+    <div class="rec-desc">
+      The question mark in white stroke asks the question cleanly. The oversized indigo dot below is the answer — sealed, certified, on record. It's the two-act story of Credo in a single mark:<br><br>
+      <em style="color: #8a8f98">Ask the question. Commit to the answer. The answer doesn't change.</em><br><br>
+      The cross inside the seal can be dropped for the nav (too small) and brought back for larger contexts like a favicon or hero. The two-tone white/indigo also gives you flexibility — white question on any dark surface, indigo dot always the accent.
+    </div>
+    <div class="card-idea">Alternatively: B (Signature) if you want the civic document feeling to dominate</div>
+  </div>
+  <div class="rec-right">
+    <div class="rec-sizes">
+      <div class="size-group">
+        <svg width="64" height="64" viewBox="0 0 48 52" fill="none">
+          <path d="M11 17 C11 8 17 3 24 3 C31 3 36 8 36 14 C36 21 29 24 26 30 L26 35"
+            stroke="#f7f8f8" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <circle cx="26" cy="46" r="5.5" fill="#7170ff"/>
+          <line x1="26" y1="43" x2="26" y2="49" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="23" y1="46" x2="29" y2="46" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        <span class="size-label">64px</span>
+      </div>
+      <div class="size-group">
+        <svg width="40" height="40" viewBox="0 0 48 52" fill="none">
+          <path d="M11 17 C11 8 17 3 24 3 C31 3 36 8 36 14 C36 21 29 24 26 30 L26 35"
+            stroke="#f7f8f8" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <circle cx="26" cy="46" r="5.5" fill="#7170ff"/>
+          <line x1="26" y1="43" x2="26" y2="49" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="23" y1="46" x2="29" y2="46" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        <span class="size-label">40px</span>
+      </div>
+      <div class="size-group">
+        <svg width="22" height="22" viewBox="0 0 48 52" fill="none">
+          <path d="M11 17 C11 8 17 3 24 3 C31 3 36 8 36 14 C36 21 29 24 26 30 L26 35"
+            stroke="#f7f8f8" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <circle cx="26" cy="46" r="5.5" fill="#7170ff"/>
+        </svg>
+        <span class="size-label">22px (nav)</span>
+      </div>
+    </div>
+    <!-- Nav preview -->
+    <div class="nav-sim" style="margin-top: 8px;">
+      <svg width="22" height="22" viewBox="0 0 48 52" fill="none">
+        <path d="M11 17 C11 8 17 3 24 3 C31 3 36 8 36 14 C36 21 29 24 26 30 L26 35"
+          stroke="#f7f8f8" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+        <circle cx="26" cy="46" r="5.5" fill="#7170ff"/>
+      </svg>
+      <span class="nav-sim-name">Credo</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

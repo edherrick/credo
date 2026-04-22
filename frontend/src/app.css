@@ -31,6 +31,11 @@
 	--color-text-muted: #6080a0;
 	--color-text-faint: #3d5878;
 
+	/* Entity type colors */
+	--entity-politician: #4a8fd4;
+	--entity-organization: #3db07a;
+	--entity-corporation: #e8a838;
+
 	/* Semantic */
 	--color-error-bg: rgba(240, 59, 32, 0.12);
 	--color-error-border: rgba(240, 59, 32, 0.35);
@@ -39,7 +44,7 @@
 	--color-warn-text: #fbbf24;
 
 	/* Typography */
-	--font-sans: 'DM Sans', system-ui, sans-serif;
+	--font-sans: 'Inter', 'SF Pro Display', -apple-system, system-ui, sans-serif;
 	--font-serif: 'DM Serif Display', Georgia, serif;
 	--font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
 
@@ -124,6 +129,7 @@ html {
 
 body {
 	font-family: var(--font-sans);
+	font-feature-settings: "cv01", "ss03";
 	background: var(--color-bg);
 	color: var(--color-text);
 	line-height: 1.6;

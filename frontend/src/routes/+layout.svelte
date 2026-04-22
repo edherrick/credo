@@ -32,7 +32,7 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link
-		href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap"
+		href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=DM+Serif+Display&display=swap"
 		rel="stylesheet"
 	/>
 </svelte:head>
@@ -41,20 +41,29 @@
 	<header class="nav">
 		<div class="nav-inner">
 			<a href={resolve('/')} class="brand">
-				<span class="brand-mark">C</span>
+				<span class="brand-mark" aria-hidden="true">
+					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<!-- Hexagonal civic seal — community structure & legitimacy -->
+						<path
+							d="M12 2.5 L20.2 7.25 L20.2 16.75 L12 21.5 L3.8 16.75 L3.8 7.25 Z"
+							stroke="rgba(247,248,248,0.38)"
+							stroke-width="1.25"
+							stroke-linejoin="round"
+							fill="none"
+						/>
+						<!-- Rising trend — measurable change, evidence-backed progress -->
+						<line x1="7.8" y1="16.2" x2="16.2" y2="8.2" stroke="#7170ff" stroke-width="1.3" stroke-linecap="round"/>
+						<circle cx="7.8" cy="16.2" r="1.6" fill="#7170ff"/>
+						<circle cx="12" cy="12.2" r="1.6" fill="#7170ff"/>
+						<circle cx="16.2" cy="8.2" r="1.6" fill="#7170ff"/>
+					</svg>
+				</span>
 				<span class="brand-name">Credo</span>
 			</a>
 
 			<nav class="nav-links">
-				<a href={resolve('/')} class:active={currentPath === '/'}>Home</a>
-				<a
-					href={resolve('/map?fips=17031&metric=median_home_price')}
-					class:active={currentPath === '/map'}>Map</a
-				>
-				<a
-					href={resolve(authState ? `/credo/${authState.user.username}` : '/credo/ed')}
-					class:active={currentPath.startsWith('/credo')}>Credo</a
-				>
+				<a href={resolve('/explore')} class:active={currentPath.startsWith('/explore')}>Explore</a>
+				<a href={resolve('/library')} class:active={currentPath.startsWith('/library')}>Library</a>
 			</nav>
 
 			<button
@@ -101,8 +110,8 @@
 		position: sticky;
 		top: 0;
 		z-index: 100;
-		background: var(--color-navy);
-		border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+		background: #0f1011;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 		height: var(--nav-height);
 	}
 
@@ -124,38 +133,33 @@
 	}
 
 	.brand-mark {
-		width: 28px;
-		height: 28px;
-		background: var(--color-accent);
-		color: white;
-		border-radius: var(--radius-md);
+		width: 22px;
+		height: 22px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-family: var(--font-serif);
-		font-size: 1rem;
-		line-height: 1;
+		flex-shrink: 0;
 	}
 
 	.brand-name {
-		font-family: var(--font-serif);
-		font-size: 1.1rem;
-		color: white;
-		letter-spacing: 0.01em;
+		font-size: 0.9375rem;
+		font-weight: 510;
+		color: #f7f8f8;
+		letter-spacing: -0.02em;
 	}
 
 	.nav-links {
 		display: flex;
 		align-items: center;
-		gap: var(--space-1);
+		gap: 2px;
 		flex: 1;
 	}
 
 	.nav-links a {
-		color: rgba(255, 255, 255, 0.55);
-		font-size: 0.875rem;
-		font-weight: 500;
-		padding: var(--space-2) var(--space-3);
+		color: #8a8f98;
+		font-size: 0.8125rem;
+		font-weight: 510;
+		padding: 5px var(--space-3);
 		border-radius: var(--radius-md);
 		transition:
 			color var(--transition-fast),
@@ -163,13 +167,13 @@
 	}
 
 	.nav-links a:hover {
-		color: white;
-		background: rgba(255, 255, 255, 0.07);
+		color: #f7f8f8;
+		background: rgba(255, 255, 255, 0.05);
 	}
 
 	.nav-links a.active {
-		color: white;
-		background: rgba(255, 255, 255, 0.1);
+		color: #f7f8f8;
+		background: rgba(255, 255, 255, 0.08);
 	}
 
 	.nav-auth {
@@ -180,25 +184,33 @@
 	}
 
 	.btn-ghost {
-		color: rgba(255, 255, 255, 0.7);
-		font-size: 0.875rem;
-		font-weight: 500;
-		padding: var(--space-2) var(--space-3);
+		color: #8a8f98;
+		font-size: 0.8125rem;
+		font-weight: 510;
+		padding: 5px var(--space-3);
 		border-radius: var(--radius-md);
-		transition: color var(--transition-fast);
+		background: rgba(255, 255, 255, 0.02);
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		transition:
+			color var(--transition-fast),
+			background var(--transition-fast),
+			border-color var(--transition-fast);
 	}
 
 	.btn-ghost:hover {
-		color: white;
+		color: #f7f8f8;
+		background: rgba(255, 255, 255, 0.05);
+		border-color: rgba(255, 255, 255, 0.12);
 	}
 
 	.btn-primary {
 		background: var(--color-accent);
 		color: white;
-		font-size: 0.875rem;
-		font-weight: 500;
-		padding: var(--space-2) var(--space-4);
+		font-size: 0.8125rem;
+		font-weight: 510;
+		padding: 5px var(--space-4);
 		border-radius: var(--radius-md);
+		border: none;
 		transition: background var(--transition-fast);
 	}
 
@@ -210,41 +222,41 @@
 		display: flex;
 		align-items: center;
 		gap: var(--space-2);
-		color: rgba(255, 255, 255, 0.8);
-		font-size: 0.875rem;
-		font-weight: 500;
-		padding: var(--space-1) var(--space-2);
+		color: #8a8f98;
+		font-size: 0.8125rem;
+		font-weight: 510;
+		padding: 4px var(--space-2);
 		border-radius: var(--radius-md);
 		transition: color var(--transition-fast);
 	}
 
 	.nav-user:hover {
-		color: white;
+		color: #f7f8f8;
 	}
 
 	.avatar {
-		width: 26px;
-		height: 26px;
+		width: 24px;
+		height: 24px;
 		background: var(--color-accent);
 		color: white;
 		border-radius: 50%;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 0.75rem;
-		font-weight: 600;
+		font-size: 0.6875rem;
+		font-weight: 590;
 	}
 
 	.theme-toggle {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 32px;
-		height: 32px;
-		background: transparent;
-		border: 1px solid rgba(255, 255, 255, 0.12);
-		border-radius: var(--radius-md);
-		color: rgba(255, 255, 255, 0.55);
+		width: 28px;
+		height: 28px;
+		background: rgba(255, 255, 255, 0.02);
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 50%;
+		color: #62666d;
 		transition:
 			color var(--transition-fast),
 			border-color var(--transition-fast),
@@ -253,9 +265,9 @@
 	}
 
 	.theme-toggle:hover {
-		color: white;
-		border-color: rgba(255, 255, 255, 0.25);
-		background: rgba(255, 255, 255, 0.07);
+		color: #f7f8f8;
+		border-color: rgba(255, 255, 255, 0.15);
+		background: rgba(255, 255, 255, 0.05);
 	}
 
 	.content {

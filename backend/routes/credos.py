@@ -6,13 +6,29 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from database import get_db
-from models.agenda import Agenda, AgendaMeans
-from models.credo import Credo, CredoEntity, Entity, EntityEvent
-from schemas.agenda import AgendaMeansOut, AgendaOut
-from schemas.credo import CredoOut
+from models.agenda import Agenda, AgendaMeans, Means
+from models.credo import Belief, CredoBelief, Credo, CredoEntity, Entity, EntityEvent
+from schemas.agenda import AgendaMeansOut, AgendaOut, MeansCategoryOut, MeansEvidenceOut, MeansOut
+from schemas.belief import BeliefOut, CredoBeliefOut
+from schemas.credo import CredoOut, CredoSummaryOut
 from schemas.entity import CredoEntityOut, EntityEventOut
 
 router = APIRouter(prefix="/api/v1/credos", tags=["credos"])
+
+
+@router.get("/", response_model=list[CredoSummaryOut])
+async def list_credos(db: AsyncSession = Depends(get_db)) -> list[CredoSummaryOut]:
+    result = await db.scalars(select(Credo).order_by(Credo.created_at.desc()))
+    return [
+        CredoSummaryOut(
+            id=c.id,
+            username=c.username,
+            title=c.title,
+            description=c.description,
+            created_at=c.created_at,
+        )
+        for c in result.all()
+    ]
 
 
 @router.get("/{username}", response_model=CredoOut)
@@ -20,6 +36,29 @@ async def get_credo(username: str, db: AsyncSession = Depends(get_db)) -> CredoO
     credo = await db.scalar(select(Credo).where(Credo.username == username))
     if not credo:
         raise HTTPException(status_code=404, detail="Credo not found")
+
+    # Founding beliefs for this credo, ordered by display_order
+    beliefs_rows = await db.scalars(
+        select(CredoBelief)
+        .where(CredoBelief.credo_id == credo.id)
+        .options(selectinload(CredoBelief.belief))
+        .order_by(CredoBelief.display_order)
+    )
+    beliefs = [
+        CredoBeliefOut(
+            belief=BeliefOut(
+                id=cb.belief.id,
+                title=cb.belief.title,
+                statement=cb.belief.statement,
+                category=cb.belief.category,
+                source=cb.belief.source,
+                canonical=cb.belief.canonical,
+            ),
+            display_order=cb.display_order,
+            notes=cb.notes,
+        )
+        for cb in beliefs_rows.all()
+    ]
 
     # Agendas belonging to this credo
     agendas_result = await db.scalars(
@@ -33,17 +72,43 @@ async def get_credo(username: str, db: AsyncSession = Depends(get_db)) -> CredoO
     agenda_ids = [a.id for a in agendas]
     means_by_agenda: dict = defaultdict(list)
     if agenda_ids:
-        means_result = await db.scalars(
-            select(AgendaMeans).where(AgendaMeans.agenda_id.in_(agenda_ids))
+        junction_result = await db.scalars(
+            select(AgendaMeans)
+            .where(AgendaMeans.agenda_id.in_(agenda_ids))
+            .options(
+                selectinload(AgendaMeans.means).selectinload(Means.category),
+                selectinload(AgendaMeans.means).selectinload(Means.evidence),
+            )
         )
-        for m in means_result.all():
-            means_by_agenda[m.agenda_id].append(
+        for jrow in junction_result.all():
+            m = jrow.means
+            means_by_agenda[jrow.agenda_id].append(
                 AgendaMeansOut(
-                    id=m.id,
-                    category=m.category,
-                    title=m.title,
-                    description=m.description,
-                    target=m.target,
+                    means_id=m.id,
+                    notes=jrow.notes,
+                    means=MeansOut(
+                        id=m.id,
+                        title=m.title,
+                        description=m.description,
+                        canonical=m.canonical,
+                        category=MeansCategoryOut(
+                            id=m.category.id,
+                            label=m.category.label,
+                            family=m.category.family,
+                            description=m.category.description,
+                        ),
+                        evidence=[
+                            MeansEvidenceOut(
+                                id=e.id,
+                                title=e.title,
+                                description=e.description,
+                                source_url=e.source_url,
+                                geography_id=e.geography_id,
+                                outcome=e.outcome,
+                            )
+                            for e in m.evidence
+                        ],
+                    ),
                 )
             )
 
@@ -86,6 +151,7 @@ async def get_credo(username: str, db: AsyncSession = Depends(get_db)) -> CredoO
         username=credo.username,
         title=credo.title,
         description=credo.description,
+        beliefs=beliefs,
         agendas=[
             AgendaOut(
                 id=a.id,

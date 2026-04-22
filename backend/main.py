@@ -3,8 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routes.agendas import router as agendas_router
 from routes.auth import auth_backend, current_active_user, fastapi_users
+from routes.axes import router as axes_router
+from routes.beliefs import router as beliefs_router
 from routes.credos import router as credos_router
+from routes.entities import router as entities_router
 from routes.geographies import router as geographies_router
+from routes.issues import router as issues_router
 from routes.metrics import router as metrics_router
 from models.user import User
 from schemas.user import UserCreate, UserRead, UserUpdate
@@ -41,6 +45,10 @@ app.include_router(geographies_router)
 app.include_router(metrics_router)
 app.include_router(agendas_router)
 app.include_router(credos_router)
+app.include_router(beliefs_router)
+app.include_router(issues_router)
+app.include_router(axes_router)
+app.include_router(entities_router)
 
 
 @app.get("/health")

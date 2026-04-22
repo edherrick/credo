@@ -1,4 +1,4 @@
-import type { Agenda, AuthToken, Credo, Geography, Metric, MetricAggregateResponse, MetricValuesResponse, User } from './types';
+import type { Agenda, Axis, Belief, AuthToken, Credo, CredoSummary, EntityDetail, Geography, Issue, Metric, MetricAggregateResponse, MetricValuesResponse, User } from './types';
 
 const BASE = '/api/v1';
 
@@ -75,9 +75,45 @@ export async function getAgendas(): Promise<Agenda[]> {
 	return res.json();
 }
 
+export async function getCredos(): Promise<CredoSummary[]> {
+	const res = await fetch(`${BASE}/credos`);
+	if (!res.ok) throw new Error('Failed to fetch credos');
+	return res.json();
+}
+
 export async function getCredo(username: string): Promise<Credo> {
 	const res = await fetch(`${BASE}/credos/${username}`);
 	if (!res.ok) throw new Error('Credo not found');
+	return res.json();
+}
+
+export async function getBeliefs(): Promise<Belief[]> {
+	const res = await fetch(`${BASE}/beliefs`);
+	if (!res.ok) throw new Error('Failed to fetch beliefs');
+	return res.json();
+}
+
+export async function getIssues(): Promise<Issue[]> {
+	const res = await fetch(`${BASE}/issues`);
+	if (!res.ok) throw new Error('Failed to fetch issues');
+	return res.json();
+}
+
+export async function getAxes(): Promise<Axis[]> {
+	const res = await fetch(`${BASE}/axes`);
+	if (!res.ok) throw new Error('Failed to fetch axes');
+	return res.json();
+}
+
+export async function getEntities(): Promise<EntityDetail[]> {
+	const res = await fetch(`${BASE}/entities`);
+	if (!res.ok) throw new Error('Failed to fetch entities');
+	return res.json();
+}
+
+export async function getEntity(slug: string): Promise<EntityDetail> {
+	const res = await fetch(`${BASE}/entities/${slug}`);
+	if (!res.ok) throw new Error('Entity not found');
 	return res.json();
 }
 

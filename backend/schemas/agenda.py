@@ -4,12 +4,35 @@ import uuid
 from pydantic import BaseModel
 
 
-class AgendaMeansOut(BaseModel):
+class MeansCategoryOut(BaseModel):
+    id: str
+    label: str
+    family: str
+    description: str | None
+
+
+class MeansEvidenceOut(BaseModel):
     id: uuid.UUID
-    category: str
     title: str
     description: str | None
-    target: str | None
+    source_url: str | None
+    geography_id: str | None
+    outcome: str | None
+
+
+class MeansOut(BaseModel):
+    id: uuid.UUID
+    title: str
+    description: str | None
+    category: MeansCategoryOut
+    canonical: bool
+    evidence: list[MeansEvidenceOut]
+
+
+class AgendaMeansOut(BaseModel):
+    means_id: uuid.UUID
+    notes: str | None
+    means: MeansOut
 
 
 class AgendaOut(BaseModel):

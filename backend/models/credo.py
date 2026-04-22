@@ -1,7 +1,7 @@
 import uuid
 
 from sqlalchemy import TIMESTAMP, Boolean, Date, ForeignKey, Integer, Numeric, Text, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from models.user import Base
 
@@ -23,6 +23,7 @@ class Entity(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     name: Mapped[str] = mapped_column(Text, nullable=False)
+    slug: Mapped[str | None] = mapped_column(Text, nullable=True, unique=True)
     type: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     wikidata_id: Mapped[str | None] = mapped_column(Text, nullable=True, unique=True)
@@ -43,6 +44,109 @@ class CredoEntity(Base):
         ForeignKey("entities.id", ondelete="CASCADE"), primary_key=True
     )
     impact_score: Mapped[int] = mapped_column(Integer, nullable=False)
+
+
+class Belief(Base):
+    """Shared library of foundational principles and philosophical axioms."""
+
+    __tablename__ = "beliefs"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    title: Mapped[str] = mapped_column(Text, nullable=False)
+    statement: Mapped[str] = mapped_column(Text, nullable=False)
+    category: Mapped[str] = mapped_column(Text, nullable=False)
+    source: Mapped[str | None] = mapped_column(Text, nullable=True)
+    canonical: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    author_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id"), nullable=True
+    )
+    created_at: Mapped[str] = mapped_column(
+        TIMESTAMP(timezone=True), server_default=func.now(), nullable=False
+    )
+
+
+class CredoBelief(Base):
+    """Junction: which beliefs a credo holds, in what order, with what emphasis."""
+
+    __tablename__ = "credo_beliefs"
+
+    credo_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("credos.id", ondelete="CASCADE"), primary_key=True
+    )
+    belief_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("beliefs.id"), primary_key=True
+    )
+    display_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[str] = mapped_column(
+        TIMESTAMP(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    belief: Mapped["Belief"] = relationship("Belief", lazy="selectin")
+
+
+class AgendaBelief(Base):
+    """Junction: which foundational beliefs an agenda operationalises."""
+
+    __tablename__ = "agenda_beliefs"
+
+    agenda_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("agendas.id", ondelete="CASCADE"), primary_key=True
+    )
+    belief_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("beliefs.id"), primary_key=True
+    )
+
+
+class Axis(Base):
+    """Shared library of evaluation dimensions for entity scoring."""
+
+    __tablename__ = "axes"
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True)
+    label: Mapped[str] = mapped_column(Text, nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    family: Mapped[str] = mapped_column(Text, nullable=False)
+    canonical: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    author_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id"), nullable=True
+    )
+    created_at: Mapped[str] = mapped_column(
+        TIMESTAMP(timezone=True), server_default=func.now(), nullable=False
+    )
+
+
+class CredoAxis(Base):
+    """Junction: which axes a credo uses to evaluate entities, and how heavily."""
+
+    __tablename__ = "credo_axes"
+
+    credo_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("credos.id", ondelete="CASCADE"), primary_key=True
+    )
+    axis_id: Mapped[str] = mapped_column(Text, ForeignKey("axes.id"), primary_key=True)
+    weight: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+
+    axis: Mapped["Axis"] = relationship("Axis", lazy="selectin")
+
+
+class CredoEntityScore(Base):
+    """Per-axis entity score within a credo. Replaces credo_entities.impact_score in Phase 2+."""
+
+    __tablename__ = "credo_entity_scores"
+
+    credo_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("credos.id", ondelete="CASCADE"), primary_key=True
+    )
+    entity_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("entities.id", ondelete="CASCADE"), primary_key=True
+    )
+    axis_id: Mapped[str] = mapped_column(Text, ForeignKey("axes.id"), primary_key=True)
+    score: Mapped[int] = mapped_column(Integer, nullable=False)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[str] = mapped_column(
+        TIMESTAMP(timezone=True), server_default=func.now(), nullable=False
+    )
 
 
 class EntityEvent(Base):

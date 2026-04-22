@@ -22,3 +22,13 @@ class CredoEntityOut(BaseModel):
     description: str | None
     impact_score: int  # credo-specific score from credo_entities
     events: list[EntityEventOut]
+
+
+class EntityDetailOut(BaseModel):
+    id: uuid.UUID
+    name: str
+    slug: str | None
+    type: str
+    description: str | None
+    wikidata_id: str | None
+    events: list[EntityEventOut]
