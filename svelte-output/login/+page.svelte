@@ -33,21 +33,7 @@
 <div class="login-page">
 	<!-- Logo -->
 	<div class="logo-lockup">
-		<span class="logo-mark" aria-hidden="true">
-			<svg width="56" height="56" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<path
-					d="M12 2.5 L20.2 7.25 L20.2 16.75 L12 21.5 L3.8 16.75 L3.8 7.25 Z"
-					stroke="rgba(247,248,248,0.38)"
-					stroke-width="1.25"
-					stroke-linejoin="round"
-					fill="none"
-				/>
-				<line x1="7.8" y1="16.2" x2="16.2" y2="8.2" stroke="#7170ff" stroke-width="1.3" stroke-linecap="round"/>
-				<circle cx="7.8" cy="16.2" r="1.6" fill="#7170ff"/>
-				<circle cx="12" cy="12.2" r="1.6" fill="#7170ff"/>
-				<circle cx="16.2" cy="8.2" r="1.6" fill="#7170ff"/>
-			</svg>
-		</span>
+		<img src="/logo.svg" alt="Credo" class="logo-mark" />
 		<span class="logo-name">Credo</span>
 	</div>
 	<p class="logo-sub">Open Civic Infrastructure</p>
@@ -77,7 +63,7 @@
 					placeholder="••••••••"
 					required
 				/>
-				<a href="/forgot-password" class="forgot">Forgot password?</a>
+				<a href={resolve('/forgot-password')} class="forgot">Forgot password?</a>
 			</div>
 
 			{#if error}
@@ -118,6 +104,7 @@
 		position: relative;
 	}
 
+	/* Subtle radial glow */
 	.login-page::before {
 		content: '';
 		position: fixed;
@@ -136,6 +123,7 @@
 		z-index: 0;
 	}
 
+	/* Grid texture */
 	.login-page::after {
 		content: '';
 		position: fixed;
@@ -160,10 +148,8 @@
 	.logo-mark {
 		width: 56px;
 		height: 56px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-shrink: 0;
+		object-fit: contain;
+		filter: brightness(0) invert(1);
 	}
 
 	.logo-name {

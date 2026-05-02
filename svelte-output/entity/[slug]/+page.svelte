@@ -42,6 +42,14 @@
 		negative: '#f97316',
 		villain: '#f03b20'
 	};
+
+	const tierLabels: Record<ScoreTier, string> = {
+		hero: 'Hero',
+		positive: 'Positive',
+		neutral: 'Neutral',
+		negative: 'Negative',
+		villain: 'Villain'
+	};
 </script>
 
 <svelte:head>
@@ -138,11 +146,13 @@
 
 		<!-- Sidebar -->
 		<aside class="side-col">
+			<!-- Impact score placeholder — real scoring TBD -->
 			<div class="sidebar-card">
 				<h3 class="sidebar-label">Community Impact Score</h3>
 				<p class="sidebar-hint">Impact scoring is calculated from documented actions. Add events to generate a score.</p>
 			</div>
 
+			<!-- Entity type info -->
 			<div class="sidebar-card">
 				<h3 class="sidebar-label">Entity Info</h3>
 				<div class="info-rows">

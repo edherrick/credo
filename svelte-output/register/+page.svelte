@@ -34,6 +34,7 @@
 </svelte:head>
 
 <div class="register-page">
+	<!-- Grid texture -->
 	<div class="grid-texture" aria-hidden="true"></div>
 
 	<div class="page-inner">
@@ -124,15 +125,7 @@
 
 		<!-- Trust note -->
 		<div class="trust-note">
-			<span class="trust-icon" aria-hidden="true">
-				<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M12 2.5 L20.2 7.25 L20.2 16.75 L12 21.5 L3.8 16.75 L3.8 7.25 Z" stroke="#7170ff" stroke-width="1.25" stroke-linejoin="round" fill="none"/>
-					<line x1="7.8" y1="16.2" x2="16.2" y2="8.2" stroke="#7170ff" stroke-width="1.3" stroke-linecap="round"/>
-					<circle cx="7.8" cy="16.2" r="1.6" fill="#7170ff"/>
-					<circle cx="12" cy="12.2" r="1.6" fill="#7170ff"/>
-					<circle cx="16.2" cy="8.2" r="1.6" fill="#7170ff"/>
-				</svg>
-			</span>
+			<img src="/logo.svg" alt="" class="trust-logo" aria-hidden="true" />
 			<p>
 				<strong>Free forever.</strong> Open source, no advertising, no corporate sponsors.
 				Your data is yours.
@@ -169,6 +162,7 @@
 		max-width: 600px;
 	}
 
+	/* Progress */
 	.progress-bar {
 		display: flex;
 		align-items: center;
@@ -353,6 +347,7 @@
 		cursor: not-allowed;
 	}
 
+	/* Trust note */
 	.trust-note {
 		margin-top: var(--space-9);
 		padding: var(--space-4) var(--space-5);
@@ -364,13 +359,11 @@
 		align-items: center;
 	}
 
-	.trust-icon {
+	.trust-logo {
 		width: 22px;
 		height: 22px;
 		flex-shrink: 0;
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		filter: brightness(0) saturate(100%) invert(42%) sepia(80%) saturate(1500%) hue-rotate(220deg) brightness(110%);
 	}
 
 	.trust-note p {

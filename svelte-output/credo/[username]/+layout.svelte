@@ -15,7 +15,7 @@
 </script>
 
 <!-- Credo header -->
-<section class="credo-header">
+<div class="credo-header">
 	<div class="credo-header-inner">
 		<div class="credo-attribution">@{credo.username}</div>
 		<h1 class="credo-title">{credo.title}</h1>
@@ -32,7 +32,7 @@
 		</div>
 	</div>
 	<div class="credo-rule"></div>
-</section>
+</div>
 
 <!-- Tab bar -->
 <nav class="credo-tabs">
@@ -47,11 +47,11 @@
 {@render children()}
 
 <style>
-	/* ── Credo header ────────────────────────────────────── */
+	/* ── Credo header ─────────────────────────────────── */
 	.credo-header {
 		background: var(--color-navy);
 		color: white;
-		padding: var(--space-14) var(--space-6) var(--space-12);
+		padding: var(--space-12) var(--space-6) var(--space-10);
 		position: relative;
 		overflow: hidden;
 	}
@@ -70,13 +70,13 @@
 	.credo-header-inner {
 		position: relative;
 		z-index: 1;
-		max-width: var(--max-width-text);
+		max-width: var(--max-width);
 		margin: 0 auto;
 	}
 
 	.credo-attribution {
-		font-size: 0.75rem;
-		font-weight: 600;
+		font-size: 0.625rem;
+		font-weight: 700;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
 		color: var(--color-accent);
@@ -123,12 +123,12 @@
 		background: linear-gradient(
 			90deg,
 			var(--color-accent) 0%,
-			var(--choropleth-2) 50%,
+			var(--choropleth-2) 45%,
 			transparent 100%
 		);
 	}
 
-	/* ── Tab bar ─────────────────────────────────────────── */
+	/* ── Tab bar ──────────────────────────────────────── */
 	.credo-tabs {
 		background: #0a1828;
 		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
@@ -150,7 +150,7 @@
 		padding: var(--space-3) var(--space-4);
 		font-size: 0.875rem;
 		font-weight: 500;
-		color: rgba(255, 255, 255, 0.5);
+		color: rgba(255, 255, 255, 0.45);
 		border-bottom: 2px solid transparent;
 		margin-bottom: -1px;
 		transition:
@@ -159,7 +159,7 @@
 	}
 
 	.credo-tabs a:hover {
-		color: rgba(255, 255, 255, 0.85);
+		color: rgba(255, 255, 255, 0.8);
 	}
 
 	.credo-tabs a.active {
