@@ -10,9 +10,14 @@ class Credo(Base):
     __tablename__ = "credos"
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    # NB: `username` is the credo's public handle (the /credo/<username> slug),
+    # not the owner's account username. owner_id is the link to the owning user.
     username: Mapped[str] = mapped_column(Text, nullable=False, unique=True)
     title: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    owner_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
     created_at: Mapped[str] = mapped_column(
         TIMESTAMP(timezone=True), server_default=func.now(), nullable=False
     )

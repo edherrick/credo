@@ -3,14 +3,14 @@ import type { MetricAggregateResponse } from '$lib/types';
 
 export const ssr = false;
 
-export async function load({ url }: { url: URL }) {
+export async function load({ url, fetch }: { url: URL; fetch: typeof globalThis.fetch }) {
 	const metricId = url.searchParams.get('metric') ?? 'median_home_price';
 	const fips = url.searchParams.get('fips') ?? '17031';
 
 	const [seriesResult, aggregateResult, metricsResult] = await Promise.allSettled([
-		getMetricValues(fips, metricId),
-		getMetricAggregate(metricId, '17'),
-		getMetrics()
+		getMetricValues(fips, metricId, undefined, fetch),
+		getMetricAggregate(metricId, '17', fetch),
+		getMetrics(fetch)
 	]);
 
 	const allValues =

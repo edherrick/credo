@@ -8,6 +8,13 @@ export default defineConfig({
 			'/api': 'http://localhost:8000'
 		}
 	},
+	// `vite preview` (used by test.sh and Playwright's webServer on :4173) does not
+	// inherit `server.proxy`, so mirror it here or /api calls 404 against the prod build.
+	preview: {
+		proxy: {
+			'/api': 'http://localhost:8000'
+		}
+	},
 	test: {
 		expect: { requireAssertions: true },
 		projects: [

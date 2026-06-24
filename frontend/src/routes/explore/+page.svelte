@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { auth } from '$lib/stores/auth';
+	import { Plus } from 'lucide-svelte';
 	import type { CredoSummary } from '$lib/types';
 
 	let { data } = $props();
 	const credos = $derived(data.credos as CredoSummary[]);
+	const authed = $derived(!!$auth);
 </script>
 
 <svelte:head>
@@ -12,8 +15,15 @@
 
 <section class="page-header">
 	<div class="page-header-inner">
-		<h1 class="page-title">Explore</h1>
-		<p class="page-sub">Browse credos built by the community</p>
+		<div class="page-header-text">
+			<h1 class="page-title">Explore</h1>
+			<p class="page-sub">Browse credos built by the community</p>
+		</div>
+		{#if authed}
+			<a href={resolve('/credo/new')} class="new-credo-btn">
+				<Plus size={15} aria-hidden="true" /> New credo
+			</a>
+		{/if}
 	</div>
 </section>
 
@@ -50,6 +60,28 @@
 	.page-header-inner {
 		max-width: var(--max-width);
 		margin: 0 auto;
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: var(--space-4);
+	}
+
+	.new-credo-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		flex-shrink: 0;
+		background: var(--color-accent);
+		color: white;
+		font-size: 0.85rem;
+		font-weight: 510;
+		padding: 0.5rem var(--space-4);
+		border-radius: var(--radius-md);
+		transition: background var(--transition-fast);
+	}
+
+	.new-credo-btn:hover {
+		background: var(--color-accent-dark);
 	}
 
 	.page-title {

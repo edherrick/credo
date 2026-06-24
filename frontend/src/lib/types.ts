@@ -128,6 +128,7 @@ export interface Credo {
 	username: string;
 	title: string;
 	description: string | null;
+	owner_id: string | null; // null = platform-seeded / unowned
 	beliefs: CredoBelief[];
 	agendas: Agenda[];
 	entities: Entity[];
@@ -138,7 +139,20 @@ export interface CredoSummary {
 	username: string;
 	title: string;
 	description: string | null;
+	owner_id: string | null; // null = platform-seeded / unowned
 	created_at: string;
+}
+
+// Write payloads — mirror the backend CredoCreate / CredoUpdate schemas.
+export interface CredoCreateInput {
+	username: string; // public handle / URL slug
+	title: string;
+	description?: string | null;
+}
+
+export interface CredoUpdateInput {
+	title?: string;
+	description?: string | null;
 }
 
 export interface Issue {

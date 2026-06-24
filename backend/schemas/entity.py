@@ -5,6 +5,8 @@ from pydantic import BaseModel
 
 
 class EntityEventOut(BaseModel):
+    model_config = {"from_attributes": True}
+
     id: uuid.UUID
     title: str
     description: str | None

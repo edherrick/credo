@@ -2,13 +2,13 @@ export const ssr = false;
 
 import { getBeliefs, getIssues, getAxes, getMetrics, getEntities } from '$lib/api';
 
-export async function load() {
+export async function load({ fetch }: { fetch: typeof globalThis.fetch }) {
 	const [beliefsRes, issuesRes, axesRes, metricsRes, entitiesRes] = await Promise.allSettled([
-		getBeliefs(),
-		getIssues(),
-		getAxes(),
-		getMetrics(),
-		getEntities()
+		getBeliefs(fetch),
+		getIssues(fetch),
+		getAxes(fetch),
+		getMetrics(fetch),
+		getEntities(fetch)
 	]);
 
 	return {

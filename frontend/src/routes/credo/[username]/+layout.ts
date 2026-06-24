@@ -3,11 +3,11 @@ import { getCredo, getGeographies, getMetrics } from '$lib/api';
 
 export const ssr = false;
 
-export async function load({ params }: { params: { username: string } }) {
+export async function load({ params, fetch }: { params: { username: string }; fetch: typeof globalThis.fetch }) {
 	const [credoResult, geosResult, metricsResult] = await Promise.allSettled([
-		getCredo(params.username),
-		getGeographies(),
-		getMetrics()
+		getCredo(params.username, fetch),
+		getGeographies(fetch),
+		getMetrics(fetch)
 	]);
 
 	if (credoResult.status === 'rejected') {

@@ -12,6 +12,8 @@ router = APIRouter(prefix="/api/v1/issues", tags=["issues"])
 
 
 class IssueListOut(BaseModel):
+    model_config = {"from_attributes": True}
+
     id: uuid.UUID
     title: str
     description: str | None
@@ -19,16 +21,7 @@ class IssueListOut(BaseModel):
     canonical: bool
 
 
-@router.get("/", response_model=list[IssueListOut])
+@router.get("", response_model=list[IssueListOut])
 async def list_issues(db: AsyncSession = Depends(get_db)) -> list[IssueListOut]:
     result = await db.scalars(select(Issue).order_by(Issue.category, Issue.title))
-    return [
-        IssueListOut(
-            id=i.id,
-            title=i.title,
-            description=i.description,
-            category=i.category,
-            canonical=i.canonical,
-        )
-        for i in result.all()
-    ]
+    return [IssueListOut.model_validate(i) for i in result.all()]

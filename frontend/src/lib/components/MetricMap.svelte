@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte';
 	import { getMetricGeoJSON, getStateMetricGeoJSON } from '../api';
 	import { theme } from '$lib/stores/theme';
 	import { ScanSearch } from 'lucide-svelte';
@@ -22,11 +21,6 @@
 	let { metricId, geographyId, stateFips, values, selectedIndex, collapsed = false, onchange }: Props = $props();
 
 	let map: import('leaflet').Map | undefined;
-
-	onDestroy(() => {
-		map?.remove();
-		map = undefined;
-	});
 	let leaflet = $state<typeof import('leaflet') | null>(null);
 	let mapReady = $state(false);
 	// Track the last date loaded to prevent the $effect from double-loading on initial mount
@@ -78,7 +72,11 @@
 				? await getStateMetricGeoJSON(stateFips, metricId, date)
 				: await getMetricGeoJSON(geographyId ?? '17031', metricId, date);
 			const feature = geojson.features?.[0];
-			if (!feature) return;
+			if (!feature) {
+				error = 'No map data available for this region yet.';
+				return;
+			}
+			error = null;
 
 			// For single-county view keep the badge; for region view use first feature for date
 			if (!stateFips) {
@@ -162,7 +160,9 @@
 		})();
 
 		return () => {
+			stopBoxZoom();
 			map?.remove();
+			map = undefined;
 		};
 	}
 
@@ -190,79 +190,80 @@
 	// Invalidate Leaflet size after map is un-collapsed (CSS transition ~300ms)
 	$effect(() => {
 		if (!collapsed && map && mapReady) {
-			setTimeout(() => map!.invalidateSize(), 320);
+			const id = setTimeout(() => map?.invalidateSize(), 320);
+			return () => clearTimeout(id);
 		}
 	});
 
-	async function toggleBoxZoom() {
-		if (!map) return;
-		const L = (await import('leaflet')).default;
+	// ── Box zoom ─────────────────────────────────────────────
+	let boxZoomStart: import('leaflet').LatLng | null = null;
+	let boxZoomRect: import('leaflet').Rectangle | null = null;
+	let boxZoomKeyHandler: ((e: KeyboardEvent) => void) | null = null;
 
-		if (boxZoomActive) {
-			// Cancel — restore normal pan mode
-			map.dragging.enable();
-			map.off('mousedown');
-			boxZoomActive = false;
-			return;
-		}
-
-		boxZoomActive = true;
-		map.dragging.disable();
-
-		let startLatLng: import('leaflet').LatLng | null = null;
-		let previewRect: import('leaflet').Rectangle | null = null;
-
-		function onMouseDown(e: import('leaflet').LeafletMouseEvent) {
-			startLatLng = e.latlng;
-			map!.on('mousemove', onMouseMove);
-			map!.once('mouseup', onMouseUp);
-		}
-
-		function onMouseMove(e: import('leaflet').LeafletMouseEvent) {
-			if (!startLatLng) return;
-			previewRect?.remove();
-			previewRect = L.rectangle(L.latLngBounds(startLatLng, e.latlng), {
+	function onBoxMouseMove(e: import('leaflet').LeafletMouseEvent) {
+		if (!boxZoomStart || !leaflet || !map) return;
+		boxZoomRect?.remove();
+		boxZoomRect = leaflet
+			.rectangle(leaflet.latLngBounds(boxZoomStart, e.latlng), {
 				weight: 1.5,
 				color: '#f03b20',
 				fillColor: '#f03b20',
 				fillOpacity: 0.08,
 				dashArray: '4 4'
-			}).addTo(map!);
-		}
+			})
+			.addTo(map);
+	}
 
-		function onMouseUp(e: import('leaflet').LeafletMouseEvent) {
-			map!.off('mousemove', onMouseMove);
-			previewRect?.remove();
-			previewRect = null;
-
-			if (startLatLng) {
-				const bounds = L.latLngBounds(startLatLng, e.latlng);
-				// Only zoom if the user actually dragged (not just clicked)
-				if (bounds.getNorthEast().distanceTo(bounds.getSouthWest()) > 500) {
-					map!.fitBounds(bounds, { animate: true, padding: [20, 20] });
-				}
-			}
-
-			startLatLng = null;
-			map!.dragging.enable();
-			map!.off('mousedown', onMouseDown);
-			boxZoomActive = false;
-		}
-
-		map.on('mousedown', onMouseDown);
-
-		// Escape cancels box zoom
-		function onKeyDown(e: KeyboardEvent) {
-			if (e.key === 'Escape') {
-				map!.off('mousedown', onMouseDown);
-				map!.off('mousemove', onMouseMove);
-				previewRect?.remove();
-				map!.dragging.enable();
-				boxZoomActive = false;
-				document.removeEventListener('keydown', onKeyDown);
+	function onBoxMouseUp(e: import('leaflet').LeafletMouseEvent) {
+		if (map && leaflet && boxZoomStart) {
+			const bounds = leaflet.latLngBounds(boxZoomStart, e.latlng);
+			// Only zoom if the user actually dragged (not just clicked)
+			if (bounds.getNorthEast().distanceTo(bounds.getSouthWest()) > 500) {
+				map.fitBounds(bounds, { animate: true, padding: [20, 20] });
 			}
 		}
-		document.addEventListener('keydown', onKeyDown);
+		stopBoxZoom();
+	}
+
+	function onBoxMouseDown(e: import('leaflet').LeafletMouseEvent) {
+		if (!map) return;
+		boxZoomStart = e.latlng;
+		map.on('mousemove', onBoxMouseMove);
+		map.once('mouseup', onBoxMouseUp);
+	}
+
+	// Single teardown for box zoom — safe to call on cancel, completion, Escape,
+	// or unmount. Always removes the document keydown listener so it can't leak.
+	function stopBoxZoom() {
+		if (boxZoomKeyHandler) {
+			document.removeEventListener('keydown', boxZoomKeyHandler);
+			boxZoomKeyHandler = null;
+		}
+		boxZoomRect?.remove();
+		boxZoomRect = null;
+		boxZoomStart = null;
+		if (map) {
+			map.off('mousedown', onBoxMouseDown);
+			map.off('mousemove', onBoxMouseMove);
+			map.off('mouseup', onBoxMouseUp);
+			map.dragging.enable();
+		}
+		boxZoomActive = false;
+	}
+
+	function toggleBoxZoom() {
+		if (!map) return;
+		if (boxZoomActive) {
+			stopBoxZoom();
+			return;
+		}
+		boxZoomActive = true;
+		map.dragging.disable();
+		map.on('mousedown', onBoxMouseDown);
+		boxZoomKeyHandler = (e) => {
+			if (e.key === 'Escape') stopBoxZoom();
+		};
+		document.addEventListener('keydown', boxZoomKeyHandler);
 	}
 </script>
 

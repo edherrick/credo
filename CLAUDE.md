@@ -67,20 +67,20 @@ bash dev.sh       # or just: credo  (if .bashrc alias is loaded)
 
 **First-time / one-off setup steps** (run manually when needed):
 ```bash
-# Database
-docker compose up -d
+# Backend — from /backend (first time only)
+python3 -m venv .venv
+.venv/bin/pip install -e ".[dev]"
+cp .env.example .env
 
-# Backend — from /backend
-pip install -e ".[dev]"          # first time only
-cp .env.example .env             # first time only
-alembic upgrade head             # first time, or after new migrations
+# Database — bootstrap a fresh DB: engine + all migrations + county boundaries.
+# Idempotent; run once (or after `docker compose down -v`). From the repo root:
+bash seed.sh
 
-# Load Cook County boundary (one-time, after backend is up)
-python scripts/load_cook_county.py
-
-# Frontend — from /frontend
-npm install                      # first time only
+# Frontend — from /frontend (first time only)
+npm install
 ```
+
+> The local Docker engine is **colima** (not Docker Desktop) — `dev.sh` / `test.sh` / `seed.sh` start it automatically. Backend commands run through the venv (`.venv/bin/...`); `seed.sh` replaces the old manual `alembic upgrade` + `load_cook_county.py` steps.
 
 API docs available at `http://localhost:8000/docs` when backend is running.
 

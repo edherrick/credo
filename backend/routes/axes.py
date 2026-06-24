@@ -10,6 +10,8 @@ router = APIRouter(prefix="/api/v1/axes", tags=["axes"])
 
 
 class AxisListOut(BaseModel):
+    model_config = {"from_attributes": True}
+
     id: str
     label: str
     description: str | None
@@ -17,16 +19,7 @@ class AxisListOut(BaseModel):
     canonical: bool
 
 
-@router.get("/", response_model=list[AxisListOut])
+@router.get("", response_model=list[AxisListOut])
 async def list_axes(db: AsyncSession = Depends(get_db)) -> list[AxisListOut]:
     result = await db.scalars(select(Axis).order_by(Axis.family, Axis.label))
-    return [
-        AxisListOut(
-            id=a.id,
-            label=a.label,
-            description=a.description,
-            family=a.family,
-            canonical=a.canonical,
-        )
-        for a in result.all()
-    ]
+    return [AxisListOut.model_validate(a) for a in result.all()]

@@ -5,6 +5,8 @@ from pydantic import BaseModel
 
 
 class MeansCategoryOut(BaseModel):
+    model_config = {"from_attributes": True}
+
     id: str
     label: str
     family: str
@@ -12,6 +14,8 @@ class MeansCategoryOut(BaseModel):
 
 
 class MeansEvidenceOut(BaseModel):
+    model_config = {"from_attributes": True}
+
     id: uuid.UUID
     title: str
     description: str | None
@@ -21,6 +25,8 @@ class MeansEvidenceOut(BaseModel):
 
 
 class MeansOut(BaseModel):
+    model_config = {"from_attributes": True}
+
     id: uuid.UUID
     title: str
     description: str | None
@@ -30,6 +36,8 @@ class MeansOut(BaseModel):
 
 
 class AgendaMeansOut(BaseModel):
+    model_config = {"from_attributes": True}
+
     means_id: uuid.UUID
     notes: str | None
     means: MeansOut

@@ -1,19 +1,28 @@
-import type { Agenda, Axis, Belief, AuthToken, Credo, CredoSummary, EntityDetail, Geography, Issue, Metric, MetricAggregateResponse, MetricValuesResponse, User } from './types';
+import type { Agenda, Axis, Belief, AuthToken, Credo, CredoCreateInput, CredoSummary, CredoUpdateInput, EntityDetail, Geography, Issue, Metric, MetricAggregateResponse, MetricValuesResponse, User } from './types';
 
 const BASE = '/api/v1';
+
+// Read helpers accept an optional `fetch` so SvelteKit `load` functions can pass
+// their instrumented fetch (event.fetch). Defaults to the global fetch for use
+// from components/event handlers.
+type Fetch = typeof fetch;
 
 function authHeaders(token: string): HeadersInit {
 	return { Authorization: `Bearer ${token}` };
 }
 
-export async function getGeographies(): Promise<Geography[]> {
-	const res = await fetch(`${BASE}/geographies`);
+function jsonAuthHeaders(token: string): HeadersInit {
+	return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+}
+
+export async function getGeographies(fetchFn: Fetch = fetch): Promise<Geography[]> {
+	const res = await fetchFn(`${BASE}/geographies`);
 	if (!res.ok) throw new Error('Failed to fetch geographies');
 	return res.json();
 }
 
-export async function getMetrics(): Promise<Metric[]> {
-	const res = await fetch(`${BASE}/metrics`);
+export async function getMetrics(fetchFn: Fetch = fetch): Promise<Metric[]> {
+	const res = await fetchFn(`${BASE}/metrics`);
 	if (!res.ok) throw new Error('Failed to fetch metrics');
 	return res.json();
 }
@@ -21,12 +30,13 @@ export async function getMetrics(): Promise<Metric[]> {
 export async function getMetricValues(
 	fips: string,
 	metricId: string,
-	params?: { date_from?: string; date_to?: string }
+	params?: { date_from?: string; date_to?: string },
+	fetchFn: Fetch = fetch
 ): Promise<MetricValuesResponse> {
 	const url = new URL(`${BASE}/geographies/${fips}/metrics/${metricId}/values`, location.origin);
 	if (params?.date_from) url.searchParams.set('date_from', params.date_from);
 	if (params?.date_to) url.searchParams.set('date_to', params.date_to);
-	const res = await fetch(url.toString());
+	const res = await fetchFn(url.toString());
 	if (!res.ok) throw new Error('Failed to fetch metric values');
 	return res.json();
 }
@@ -34,13 +44,14 @@ export async function getMetricValues(
 export async function getStateMetricGeoJSON(
 	stateFips: string,
 	metricId: string,
-	date?: string
+	date?: string,
+	fetchFn: Fetch = fetch
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
 	const url = new URL(`${BASE}/metrics/${metricId}/geojson`, location.origin);
 	url.searchParams.set('state_fips', stateFips);
 	if (date) url.searchParams.set('date', date);
-	const res = await fetch(url.toString());
+	const res = await fetchFn(url.toString());
 	if (!res.ok) throw new Error('Failed to fetch state GeoJSON');
 	return res.json();
 }
@@ -48,71 +59,114 @@ export async function getStateMetricGeoJSON(
 export async function getMetricGeoJSON(
 	fips: string,
 	metricId: string,
-	date?: string
+	date?: string,
+	fetchFn: Fetch = fetch
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
 	const url = new URL(`${BASE}/geographies/${fips}/metrics/${metricId}/geojson`, location.origin);
 	if (date) url.searchParams.set('date', date);
-	const res = await fetch(url.toString());
+	const res = await fetchFn(url.toString());
 	if (!res.ok) throw new Error('Failed to fetch GeoJSON');
 	return res.json();
 }
 
 export async function getMetricAggregate(
 	metricId: string,
-	stateFips: string
+	stateFips: string,
+	fetchFn: Fetch = fetch
 ): Promise<MetricAggregateResponse> {
 	const url = new URL(`${BASE}/metrics/${metricId}/aggregate`, location.origin);
 	url.searchParams.set('state_fips', stateFips);
-	const res = await fetch(url.toString());
+	const res = await fetchFn(url.toString());
 	if (!res.ok) throw new Error('Failed to fetch metric aggregate');
 	return res.json();
 }
 
-export async function getAgendas(): Promise<Agenda[]> {
-	const res = await fetch(`${BASE}/agendas`);
+export async function getAgendas(fetchFn: Fetch = fetch): Promise<Agenda[]> {
+	const res = await fetchFn(`${BASE}/agendas`);
 	if (!res.ok) throw new Error('Failed to fetch agendas');
 	return res.json();
 }
 
-export async function getCredos(): Promise<CredoSummary[]> {
-	const res = await fetch(`${BASE}/credos`);
+export async function getCredos(fetchFn: Fetch = fetch): Promise<CredoSummary[]> {
+	const res = await fetchFn(`${BASE}/credos`);
 	if (!res.ok) throw new Error('Failed to fetch credos');
 	return res.json();
 }
 
-export async function getCredo(username: string): Promise<Credo> {
-	const res = await fetch(`${BASE}/credos/${username}`);
+export async function getCredo(username: string, fetchFn: Fetch = fetch): Promise<Credo> {
+	const res = await fetchFn(`${BASE}/credos/${username}`);
 	if (!res.ok) throw new Error('Credo not found');
 	return res.json();
 }
 
-export async function getBeliefs(): Promise<Belief[]> {
-	const res = await fetch(`${BASE}/beliefs`);
+export async function createCredo(token: string, input: CredoCreateInput): Promise<CredoSummary> {
+	const res = await fetch(`${BASE}/credos`, {
+		method: 'POST',
+		headers: jsonAuthHeaders(token),
+		body: JSON.stringify(input)
+	});
+	if (!res.ok) {
+		const err = await res.json().catch(() => ({}));
+		throw new Error(err.detail ?? 'Failed to create credo');
+	}
+	return res.json();
+}
+
+export async function updateCredo(
+	token: string,
+	username: string,
+	input: CredoUpdateInput
+): Promise<CredoSummary> {
+	const res = await fetch(`${BASE}/credos/${username}`, {
+		method: 'PATCH',
+		headers: jsonAuthHeaders(token),
+		body: JSON.stringify(input)
+	});
+	if (!res.ok) {
+		const err = await res.json().catch(() => ({}));
+		throw new Error(err.detail ?? 'Failed to update credo');
+	}
+	return res.json();
+}
+
+export async function deleteCredo(token: string, username: string): Promise<void> {
+	const res = await fetch(`${BASE}/credos/${username}`, {
+		method: 'DELETE',
+		headers: authHeaders(token)
+	});
+	if (!res.ok) {
+		const err = await res.json().catch(() => ({}));
+		throw new Error(err.detail ?? 'Failed to delete credo');
+	}
+}
+
+export async function getBeliefs(fetchFn: Fetch = fetch): Promise<Belief[]> {
+	const res = await fetchFn(`${BASE}/beliefs`);
 	if (!res.ok) throw new Error('Failed to fetch beliefs');
 	return res.json();
 }
 
-export async function getIssues(): Promise<Issue[]> {
-	const res = await fetch(`${BASE}/issues`);
+export async function getIssues(fetchFn: Fetch = fetch): Promise<Issue[]> {
+	const res = await fetchFn(`${BASE}/issues`);
 	if (!res.ok) throw new Error('Failed to fetch issues');
 	return res.json();
 }
 
-export async function getAxes(): Promise<Axis[]> {
-	const res = await fetch(`${BASE}/axes`);
+export async function getAxes(fetchFn: Fetch = fetch): Promise<Axis[]> {
+	const res = await fetchFn(`${BASE}/axes`);
 	if (!res.ok) throw new Error('Failed to fetch axes');
 	return res.json();
 }
 
-export async function getEntities(): Promise<EntityDetail[]> {
-	const res = await fetch(`${BASE}/entities`);
+export async function getEntities(fetchFn: Fetch = fetch): Promise<EntityDetail[]> {
+	const res = await fetchFn(`${BASE}/entities`);
 	if (!res.ok) throw new Error('Failed to fetch entities');
 	return res.json();
 }
 
-export async function getEntity(slug: string): Promise<EntityDetail> {
-	const res = await fetch(`${BASE}/entities/${slug}`);
+export async function getEntity(slug: string, fetchFn: Fetch = fetch): Promise<EntityDetail> {
+	const res = await fetchFn(`${BASE}/entities/${slug}`);
 	if (!res.ok) throw new Error('Entity not found');
 	return res.json();
 }

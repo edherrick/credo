@@ -38,19 +38,7 @@ async def get_entity(slug: str, db: AsyncSession = Depends(get_db)) -> EntityDet
         .order_by(EntityEvent.event_date.desc().nullslast(), EntityEvent.title)
     )
 
-    events = [
-        EntityEventOut(
-            id=ev.id,
-            title=ev.title,
-            description=ev.description,
-            event_date=ev.event_date,
-            metric_id=ev.metric_id,
-            event_impact_score=ev.event_impact_score,
-            source_url=ev.source_url,
-            source_type=ev.source_type,
-        )
-        for ev in events_result.all()
-    ]
+    events = [EntityEventOut.model_validate(ev) for ev in events_result.all()]
 
     return EntityDetailOut(
         id=entity.id,

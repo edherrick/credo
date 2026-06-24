@@ -49,7 +49,7 @@
 			legislation. Transparent, metrics-anchored, and open source.
 		</p>
 		<div class="hero-actions">
-			<a href={resolve('/credo/ed')} class="cta-primary">
+			<a href={resolve('/credo/example')} class="cta-primary">
 				See an example credo
 				<ArrowRight size={16} aria-hidden="true" />
 			</a>
@@ -107,7 +107,7 @@
 				Explore a live credo tracking housing affordability across the Chicago metro.
 			</p>
 		</div>
-		<a href={resolve('/credo/ed')} class="cta-strip-btn">
+		<a href={resolve('/credo/example')} class="cta-strip-btn">
 			View example credo
 			<ArrowRight size={15} aria-hidden="true" />
 		</a>

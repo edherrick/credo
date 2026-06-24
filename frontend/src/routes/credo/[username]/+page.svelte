@@ -82,6 +82,15 @@
 
 <ActorModal entity={selectedActor} onclose={() => (selectedActor = null)} />
 
+<!-- Credo summary — moved below the tabs so the tab layout stays consistent across tabs -->
+{#if credo.description}
+	<section class="section credo-intro">
+		<div class="section-inner">
+			<p class="credo-intro-lead">{credo.description}</p>
+		</div>
+	</section>
+{/if}
+
 <!-- Founding Beliefs -->
 {#if credo.beliefs && credo.beliefs.length > 0}
 	<section class="section section-alt">
@@ -312,6 +321,24 @@
 	.section-sub {
 		font-size: 0.9rem;
 		color: var(--color-text-muted);
+	}
+
+	/* Credo summary lead — first block under the tabs on Overview.
+	   Sits on a raised surface so it separates from the deep-navy header. */
+	.credo-intro {
+		background: var(--color-surface);
+		border-bottom: 1px solid var(--color-border);
+		padding-top: var(--space-10);
+		padding-bottom: var(--space-10);
+	}
+
+	.credo-intro-lead {
+		font-family: var(--font-serif);
+		font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+		font-weight: 400;
+		line-height: 1.6;
+		color: var(--color-text);
+		max-width: var(--max-width-text);
 	}
 
 	/* ── Founding beliefs ───────────────────────────────── */
