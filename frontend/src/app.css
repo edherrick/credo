@@ -26,6 +26,13 @@
 	--color-border: #1c3252;  /* subtle separators */
 	--color-border-strong: #2b4a72; /* visible separators */
 
+	/* White overlays on the always-navy chrome (nav, credo bar). Theme-independent
+	   because the navy surfaces stay dark in both themes. */
+	--overlay-1: rgba(255, 255, 255, 0.04); /* faint fill / hover */
+	--overlay-2: rgba(255, 255, 255, 0.08); /* hairline border / hover-strong */
+	--overlay-3: rgba(255, 255, 255, 0.14); /* visible border on navy */
+	--text-on-navy: rgba(255, 255, 255, 0.62); /* muted text on the navy chrome */
+
 	/* Text — cool off-white, not harsh pure white */
 	--color-text: #c4d4e8;
 	--color-text-muted: #6080a0;
@@ -36,6 +43,15 @@
 	--entity-organization: #3db07a;
 	--entity-corporation: #e8a838;
 
+	/* Accountability scale — entity/credo scoring (hero → villain). A diverging
+	   good→bad scale, distinct from the sequential choropleth. Data-red is deep
+	   crimson, NOT the brand accent, so an "active/live" red never reads as "bad". */
+	--score-hero: #22c55e;     /* green   — strongly aligned */
+	--score-positive: #14b8a6; /* teal    — aligned */
+	--score-neutral: #6080a0;  /* slate   — neutral / unknown */
+	--score-negative: #f97316; /* orange  — misaligned */
+	--score-villain: #bd0026;  /* crimson — strongly opposed (== choropleth-5) */
+
 	/* Semantic */
 	--color-error-bg: rgba(240, 59, 32, 0.12);
 	--color-error-border: rgba(240, 59, 32, 0.35);
@@ -43,7 +59,10 @@
 	--color-warn-bg: rgba(245, 158, 11, 0.12);
 	--color-warn-text: #fbbf24;
 
-	/* Typography */
+	/* Typography — three voices:
+	   serif = civic / editorial authority (titles, headings, hero numbers; display only)
+	   sans  = working UI + body
+	   mono  = data & labels (metric values, geo/FIPS codes, eyebrows, badge labels) */
 	--font-sans: 'Inter', 'SF Pro Display', -apple-system, system-ui, sans-serif;
 	--font-serif: 'DM Serif Display', Georgia, serif;
 	--font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
@@ -71,6 +90,7 @@
 	--radius-md: 6px;
 	--radius-lg: 10px;
 	--radius-xl: 16px;
+	--radius-full: 9999px; /* pills, chips */
 
 	/* Shadows — deeper on dark backgrounds */
 	--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.25);

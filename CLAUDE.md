@@ -110,9 +110,10 @@ All design tokens (colors, fonts, spacing, radii, shadows) are defined as CSS cu
 
 ```
 frontend/src/
-├── app.css               ← ALL design tokens live here
+├── app.css                 ← ALL design tokens live here
+├── lib/components/ui/       ← reusable primitives (Button, Field, Card, Section, Badge, EmptyState)
 └── routes/
-    └── +layout.svelte    ← imports app.css, defines nav styles
+    └── +layout.svelte      ← imports app.css, defines nav styles
 ```
 
 **Token categories in `app.css`:**
@@ -126,32 +127,22 @@ frontend/src/
 | `--radius-*` | `--radius-sm`, `--radius-md`, `--radius-lg` |
 | `--shadow-*` | `--shadow-md`, `--shadow-accent` |
 | `--transition-*` | `--transition-fast`, `--transition-base` |
+| `--score-*` | `--score-hero` … `--score-villain` (entity accountability scale, green→crimson) |
+| `--overlay-*` | white fills/borders/text on the always-navy chrome |
 
 ### Design System
 
-`DESIGN.md` in the project root contains the Linear-inspired design system — typography, color palette, component specs, and elevation rules. **Reference it when building or modifying any UI.** Key principles:
+`DESIGN.md` (project root) is the source of truth for the visual language — the **"civic cartographic ledger"** identity, palette, the three type voices, and the component primitives. **Reference it when building or modifying any UI.** Key principles:
 
-- **Font**: Inter Variable with `font-feature-settings: "cv01", "ss03"` (set globally in `app.css`)
-- **Weights**: 400 (body), 510 (UI/emphasis), 590 (strong) — avoid 700
-- **Dark surfaces**: near-black backgrounds (`#0f1011`, `#191a1b`) with semi-transparent white borders (`rgba(255,255,255,0.05–0.08)`)
-- **Accent**: red-orange (`--color-accent`) for brand/CTA — tied to the choropleth scale identity
+- **Identity**: deep **navy** surfaces + a **warm accent** reserved for *interactive* signals (CTA, active tab, focus ring) + an **editorial serif**. Data has its own scales (`--choropleth-*` for the map, `--score-*` green→crimson for entity scoring) — never use the brand red to mean "bad."
+- **Three type voices**: `--font-serif` = authority (titles, beliefs, hero numbers), `--font-sans` = UI/body (Inter, `"cv01","ss03"` global), `--font-mono` = data & labels (metric values, geo codes, eyebrows, badge labels).
+- **Elevation**: background luminance stepping (`--color-bg` → `--color-surface`) + thin cool borders — not heavy shadows.
 
-**Component styles** use scoped `<style>` blocks (class names don't leak) but reference `var(--token)` instead of raw hex values:
+**Build UI from the primitives** in `lib/components/ui/` (`Button`, `Field`, `Card`, `Section`, `Badge`, `EmptyState`) — typed `variant` props give autocomplete. Don't re-define a button/field/card in a feature file; extend an existing primitive or add a new one.
 
-```svelte
-<!-- ✓ correct -->
-<style>
-  .card { border: 1px solid var(--color-border); border-radius: var(--radius-lg); }
-  .card:hover { border-color: var(--color-accent); box-shadow: var(--shadow-accent); }
-</style>
+**Component styles** use scoped `<style>` blocks referencing `var(--token)`, never raw values. Never add `:global()` to a component — global rules belong in `app.css`.
 
-<!-- ✗ avoid — hardcoded values make theming painful -->
-<style>
-  .card { border: 1px solid #e8e8e4; border-radius: 10px; }
-</style>
-```
-
-Never add `:global()` CSS to component files — global rules belong in `app.css`.
+**Stylelint enforces this**: `npm run lint` (or `npm run lint:css`) flags raw `#hex`/`rgba()` where a token belongs and any `var(--typo)` not defined in `app.css` — keeping the token set discoverable and catching drift. (It already caught a missing `--radius-full` and the duplicated score-tier palette.)
 
 ## Key Rules
 

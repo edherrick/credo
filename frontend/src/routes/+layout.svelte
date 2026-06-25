@@ -8,6 +8,7 @@
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import { Sun, Moon } from 'lucide-svelte';
+	import { Button } from '$lib/components/ui';
 
 	let { children } = $props();
 
@@ -86,8 +87,8 @@
 						<span>{authState.user.username}</span>
 					</a>
 				{:else}
-					<a href={resolve('/login')} class="btn-ghost">Log in</a>
-					<a href={resolve('/register')} class="btn-primary">Register</a>
+					<Button href={resolve('/login')} variant="ghost" size="sm">Log in</Button>
+					<Button href={resolve('/register')} variant="primary" size="sm">Register</Button>
 				{/if}
 			</div>
 		</div>
@@ -110,8 +111,8 @@
 		position: sticky;
 		top: 0;
 		z-index: 100;
-		background: #0f1011;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+		background: var(--color-navy);
+		border-bottom: 1px solid var(--overlay-1);
 		height: var(--nav-height);
 	}
 
@@ -144,7 +145,7 @@
 	.brand-name {
 		font-size: 0.9375rem;
 		font-weight: 510;
-		color: #f7f8f8;
+		color: white;
 		letter-spacing: -0.02em;
 	}
 
@@ -156,7 +157,7 @@
 	}
 
 	.nav-links a {
-		color: #8a8f98;
+		color: var(--text-on-navy);
 		font-size: 0.8125rem;
 		font-weight: 510;
 		padding: 5px var(--space-3);
@@ -167,13 +168,13 @@
 	}
 
 	.nav-links a:hover {
-		color: #f7f8f8;
-		background: rgba(255, 255, 255, 0.05);
+		color: white;
+		background: var(--overlay-1);
 	}
 
 	.nav-links a.active {
-		color: #f7f8f8;
-		background: rgba(255, 255, 255, 0.08);
+		color: white;
+		background: var(--overlay-2);
 	}
 
 	.nav-auth {
@@ -183,46 +184,11 @@
 		flex-shrink: 0;
 	}
 
-	.btn-ghost {
-		color: #8a8f98;
-		font-size: 0.8125rem;
-		font-weight: 510;
-		padding: 5px var(--space-3);
-		border-radius: var(--radius-md);
-		background: rgba(255, 255, 255, 0.02);
-		border: 1px solid rgba(255, 255, 255, 0.08);
-		transition:
-			color var(--transition-fast),
-			background var(--transition-fast),
-			border-color var(--transition-fast);
-	}
-
-	.btn-ghost:hover {
-		color: #f7f8f8;
-		background: rgba(255, 255, 255, 0.05);
-		border-color: rgba(255, 255, 255, 0.12);
-	}
-
-	.btn-primary {
-		background: var(--color-accent);
-		color: white;
-		font-size: 0.8125rem;
-		font-weight: 510;
-		padding: 5px var(--space-4);
-		border-radius: var(--radius-md);
-		border: none;
-		transition: background var(--transition-fast);
-	}
-
-	.btn-primary:hover {
-		background: var(--color-accent-dark);
-	}
-
 	.nav-user {
 		display: flex;
 		align-items: center;
 		gap: var(--space-2);
-		color: #8a8f98;
+		color: var(--text-on-navy);
 		font-size: 0.8125rem;
 		font-weight: 510;
 		padding: 4px var(--space-2);
@@ -231,7 +197,7 @@
 	}
 
 	.nav-user:hover {
-		color: #f7f8f8;
+		color: white;
 	}
 
 	.avatar {
@@ -253,10 +219,10 @@
 		justify-content: center;
 		width: 28px;
 		height: 28px;
-		background: rgba(255, 255, 255, 0.02);
-		border: 1px solid rgba(255, 255, 255, 0.08);
+		background: var(--overlay-1);
+		border: 1px solid var(--overlay-2);
 		border-radius: 50%;
-		color: #62666d;
+		color: var(--text-on-navy);
 		transition:
 			color var(--transition-fast),
 			border-color var(--transition-fast),
@@ -265,9 +231,9 @@
 	}
 
 	.theme-toggle:hover {
-		color: #f7f8f8;
-		border-color: rgba(255, 255, 255, 0.15);
-		background: rgba(255, 255, 255, 0.05);
+		color: white;
+		border-color: var(--overlay-3);
+		background: var(--overlay-1);
 	}
 
 	.content {

@@ -3,6 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { auth } from '$lib/stores/auth';
 	import { createCredo } from '$lib/api';
+	import { Button, Field } from '$lib/components/ui';
 
 	const authState = $derived($auth);
 
@@ -52,50 +53,39 @@
 			<div class="gate">
 				<p>You need an account to create a credo.</p>
 				<div class="gate-actions">
-					<a href={resolve('/login')} class="btn-primary">Log in</a>
-					<a href={resolve('/register')} class="btn-ghost">Register</a>
+					<Button href={resolve('/login')} variant="primary">Log in</Button>
+					<Button href={resolve('/register')} variant="ghost">Register</Button>
 				</div>
 			</div>
 		{:else}
 			<form onsubmit={handleSubmit}>
-				<label class="field">
-					<span class="field-label">Handle</span>
-					<input
-						type="text"
-						bind:value={username}
-						placeholder="chicago-housing"
-						autocomplete="off"
-						required
-					/>
-					<span class="field-hint">
-						Lowercase letters, numbers, hyphens. Your credo will live at
-						<code>/credo/{slug || '…'}</code>
-					</span>
-				</label>
+				<Field
+					label="Handle"
+					bind:value={username}
+					placeholder="chicago-housing"
+					required
+					hint={`Lowercase letters, numbers, hyphens — lives at /credo/${slug || '…'}`}
+				/>
+				<Field
+					label="Title"
+					bind:value={title}
+					placeholder="Chicago Metro Housing Affordability"
+					required
+				/>
+				<Field
+					label="Description"
+					bind:value={description}
+					multiline
+					placeholder="What this credo is about and what it's trying to change."
+				/>
 
-				<label class="field">
-					<span class="field-label">Title</span>
-					<input type="text" bind:value={title} placeholder="Chicago Metro Housing Affordability" required />
-				</label>
-
-				<label class="field">
-					<span class="field-label">Description <span class="optional">(optional)</span></span>
-					<textarea
-						bind:value={description}
-						rows="4"
-						placeholder="What this credo is about and what it's trying to change."
-					></textarea>
-				</label>
-
-				{#if error}
-					<p class="error">{error}</p>
-				{/if}
+				{#if error}<p class="error">{error}</p>{/if}
 
 				<div class="form-actions">
-					<a href={resolve('/explore')} class="btn-ghost">Cancel</a>
-					<button type="submit" class="btn-primary" disabled={submitting || !slug || !title.trim()}>
+					<Button href={resolve('/explore')} variant="ghost">Cancel</Button>
+					<Button type="submit" variant="primary" disabled={submitting || !slug || !title.trim()}>
 						{submitting ? 'Creating…' : 'Create credo'}
-					</button>
+					</Button>
 				</div>
 			</form>
 		{/if}
@@ -107,7 +97,7 @@
 		background: var(--color-navy);
 		color: white;
 		padding: var(--space-12) var(--space-6) var(--space-10);
-		border-bottom: 3px solid var(--color-accent);
+		border-bottom: 1px solid var(--color-border-strong);
 	}
 
 	.page-header-inner {
@@ -124,7 +114,7 @@
 
 	.page-sub {
 		font-size: 0.9rem;
-		color: rgba(255, 255, 255, 0.55);
+		color: var(--text-on-navy);
 	}
 
 	.section {
@@ -142,62 +132,9 @@
 		gap: var(--space-6);
 	}
 
-	.field {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-2);
-	}
-
-	.field-label {
-		font-size: 0.85rem;
-		font-weight: 510;
-		color: var(--color-text);
-	}
-
-	.optional {
-		font-weight: 400;
-		color: var(--color-text-faint);
-	}
-
-	input,
-	textarea {
-		width: 100%;
-		padding: 0.6rem 0.75rem;
-		font: inherit;
-		font-size: 0.9rem;
-		color: var(--color-text);
-		background: var(--color-bg);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-md);
-		transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-	}
-
-	textarea {
-		resize: vertical;
-	}
-
-	input:focus,
-	textarea:focus {
-		outline: none;
-		border-color: var(--color-accent);
-		box-shadow: var(--shadow-accent);
-	}
-
-	.field-hint {
-		font-size: 0.78rem;
-		color: var(--color-text-muted);
-	}
-
-	.field-hint code {
-		font-family: var(--font-mono);
-		font-size: 0.74rem;
-		color: var(--color-accent);
-	}
-
 	.error {
 		color: var(--color-accent);
 		font-size: 0.85rem;
-		margin: calc(-1 * var(--space-3)) 0 0;
 	}
 
 	.form-actions {
@@ -220,42 +157,5 @@
 	.gate-actions {
 		display: flex;
 		gap: var(--space-3);
-	}
-
-	.btn-primary {
-		background: var(--color-accent);
-		color: white;
-		font-size: 0.85rem;
-		font-weight: 510;
-		padding: 0.55rem var(--space-5);
-		border-radius: var(--radius-md);
-		border: none;
-		cursor: pointer;
-		transition: background var(--transition-fast);
-	}
-
-	.btn-primary:hover {
-		background: var(--color-accent-dark);
-	}
-
-	.btn-primary:disabled {
-		opacity: 0.55;
-		cursor: not-allowed;
-	}
-
-	.btn-ghost {
-		color: var(--color-text-muted);
-		font-size: 0.85rem;
-		font-weight: 510;
-		padding: 0.55rem var(--space-4);
-		border-radius: var(--radius-md);
-		border: 1px solid var(--color-border);
-		background: var(--color-bg);
-		transition: border-color var(--transition-fast), color var(--transition-fast);
-	}
-
-	.btn-ghost:hover {
-		color: var(--color-text);
-		border-color: var(--color-border-strong);
 	}
 </style>

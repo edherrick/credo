@@ -3,6 +3,7 @@
 	import { auth } from '$lib/stores/auth';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { Button, Field } from '$lib/components/ui';
 
 	let email = $state('');
 	let password = $state('');
@@ -28,69 +29,72 @@
 	}
 </script>
 
-<main>
-	<h1>Register</h1>
-	<form onsubmit={handleSubmit}>
-		<label>
-			Username
-			<input type="text" bind:value={username} required />
-		</label>
-		<label>
-			Email
-			<input type="email" bind:value={email} required />
-		</label>
-		<label>
-			Password
-			<input type="password" bind:value={password} required minlength={8} />
-		</label>
-		{#if error}
-			<p class="error">{error}</p>
-		{/if}
-		<button type="submit" disabled={submitting}>
-			{submitting ? 'Creating account…' : 'Register'}
-		</button>
-	</form>
-	<p>Already have an account? <a href={resolve('/login')}>Log in</a></p>
+<svelte:head><title>Register · Credo</title></svelte:head>
+
+<main class="auth">
+	<div class="auth-card">
+		<h1 class="auth-title">Create your account</h1>
+		<form onsubmit={handleSubmit}>
+			<Field label="Username" bind:value={username} required placeholder="your-handle" />
+			<Field label="Email" type="email" bind:value={email} required />
+			<Field
+				label="Password"
+				type="password"
+				bind:value={password}
+				required
+				hint="At least 8 characters."
+			/>
+			{#if error}<p class="auth-error">{error}</p>{/if}
+			<Button type="submit" variant="primary" disabled={submitting}>
+				{submitting ? 'Creating account…' : 'Register'}
+			</Button>
+		</form>
+		<p class="auth-alt">Already have an account? <a href={resolve('/login')}>Log in</a></p>
+	</div>
 </main>
 
 <style>
-	main {
+	.auth {
 		max-width: 400px;
-		margin: 4rem auto;
-		padding: 0 1rem;
-		font-family: sans-serif;
+		margin: var(--space-16) auto;
+		padding: 0 var(--space-6);
 	}
+
+	.auth-card {
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		padding: var(--space-8);
+	}
+
+	.auth-title {
+		font-family: var(--font-serif);
+		font-size: 1.5rem;
+		font-weight: 400;
+		line-height: 1.2;
+		color: var(--color-text);
+		margin-bottom: var(--space-6);
+	}
+
 	form {
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
+		gap: var(--space-5);
 	}
-	label {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-		font-size: 0.9rem;
+
+	.auth-error {
+		color: var(--color-accent);
+		font-size: 0.85rem;
 	}
-	input {
-		padding: 0.5rem;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-		font-size: 1rem;
+
+	.auth-alt {
+		margin-top: var(--space-6);
+		font-size: 0.85rem;
+		color: var(--color-text-muted);
 	}
-	button {
-		padding: 0.6rem;
-		background: #2171b5;
-		color: white;
-		border: none;
-		border-radius: 4px;
-		font-size: 1rem;
-		cursor: pointer;
-	}
-	button:disabled {
-		opacity: 0.6;
-	}
-	.error {
-		color: #c00;
-		font-size: 0.9rem;
+
+	.auth-alt a {
+		color: var(--color-accent);
+		font-weight: 510;
 	}
 </style>

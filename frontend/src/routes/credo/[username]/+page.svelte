@@ -64,12 +64,12 @@
 
 	// ── Means taxonomy display ───────────────────────────────
 	const MEANS_COLOR: Record<string, string> = {
-		incentive:  '#22c55e',
-		penalty:    '#f97316',
+		incentive:  'var(--score-hero)',
+		penalty:    'var(--score-negative)',
 		mandate:    '#3b82f6',
 		boycott:    '#a855f7',
 		divestment: '#f59e0b',
-		zoning:     '#14b8a6',
+		zoning:     'var(--score-positive)',
 		litigation: '#ef4444',
 		petition:   '#6b7280',
 		subsidy:    '#84cc16'
@@ -624,11 +624,11 @@
 		transform: translateY(-2px);
 	}
 
-	.actor-card--hero     { border-left-color: #22c55e; }
-	.actor-card--positive { border-left-color: #14b8a6; }
+	.actor-card--hero     { border-left-color: var(--score-hero); }
+	.actor-card--positive { border-left-color: var(--score-positive); }
 	.actor-card--neutral  { border-left-color: var(--color-border-strong); }
-	.actor-card--negative { border-left-color: #f97316; }
-	.actor-card--villain  { border-left-color: var(--color-accent); }
+	.actor-card--negative { border-left-color: var(--score-negative); }
+	.actor-card--villain  { border-left-color: var(--score-villain); }
 
 	.actor-card-top {
 		display: flex;
@@ -661,16 +661,16 @@
 		flex-shrink: 0;
 	}
 
-	.score--hero     { color: #22c55e; }
-	.score--hero .score-dot     { background: #22c55e; }
-	.score--positive { color: #14b8a6; }
-	.score--positive .score-dot { background: #14b8a6; }
+	.score--hero     { color: var(--score-hero); }
+	.score--hero .score-dot     { background: var(--score-hero); }
+	.score--positive { color: var(--score-positive); }
+	.score--positive .score-dot { background: var(--score-positive); }
 	.score--neutral  { color: var(--color-text-muted); }
 	.score--neutral .score-dot  { background: var(--color-text-muted); }
-	.score--negative { color: #f97316; }
-	.score--negative .score-dot { background: #f97316; }
-	.score--villain  { color: var(--color-accent); }
-	.score--villain .score-dot  { background: var(--color-accent); }
+	.score--negative { color: var(--score-negative); }
+	.score--negative .score-dot { background: var(--score-negative); }
+	.score--villain  { color: var(--score-villain); }
+	.score--villain .score-dot  { background: var(--score-villain); }
 
 	.actor-name {
 		font-size: 1rem;

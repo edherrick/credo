@@ -1,0 +1,29 @@
+{
+	"plugins": [
+		"stylelint-value-no-unknown-custom-properties",
+		"stylelint-declaration-strict-value"
+	],
+	"rules": {
+		"csstools/value-no-unknown-custom-properties": [
+			true,
+			{ "importFrom": ["src/app.css"] }
+		]
+	},
+	"overrides": [
+		{
+			"files": ["**/*.svelte"],
+			"customSyntax": "postcss-html",
+			"rules": {
+				"scale-unlimited/declaration-strict-value": [
+					["/color/", "fill", "stroke", "background"],
+					{
+						"ignoreValues": ["transparent", "currentColor", "inherit", "none", "unset", "white", "black"],
+						"ignoreFunctions": true,
+						"severity": "warning",
+						"disableFix": true
+					}
+				]
+			}
+		}
+	]
+}

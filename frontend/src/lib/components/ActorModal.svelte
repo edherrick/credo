@@ -171,11 +171,11 @@
 		flex-shrink: 0;
 	}
 
-	.modal-header--hero    { border-left-color: #22c55e; }
-	.modal-header--positive { border-left-color: #14b8a6; }
+	.modal-header--hero    { border-left-color: var(--score-hero); }
+	.modal-header--positive { border-left-color: var(--score-positive); }
 	.modal-header--neutral  { border-left-color: var(--color-border); }
-	.modal-header--negative { border-left-color: #f97316; }
-	.modal-header--villain  { border-left-color: var(--color-accent); }
+	.modal-header--negative { border-left-color: var(--score-negative); }
+	.modal-header--villain  { border-left-color: var(--score-villain); }
 
 	.modal-header-meta {
 		display: flex;
@@ -209,16 +209,16 @@
 		flex-shrink: 0;
 	}
 
-	.score--hero     { color: #22c55e; }
-	.score--hero .score-dot { background: #22c55e; }
-	.score--positive { color: #14b8a6; }
-	.score--positive .score-dot { background: #14b8a6; }
+	.score--hero     { color: var(--score-hero); }
+	.score--hero .score-dot { background: var(--score-hero); }
+	.score--positive { color: var(--score-positive); }
+	.score--positive .score-dot { background: var(--score-positive); }
 	.score--neutral  { color: var(--color-text-muted); }
 	.score--neutral .score-dot { background: var(--color-text-muted); }
-	.score--negative { color: #f97316; }
-	.score--negative .score-dot { background: #f97316; }
-	.score--villain  { color: var(--color-accent); }
-	.score--villain .score-dot { background: var(--color-accent); }
+	.score--negative { color: var(--score-negative); }
+	.score--negative .score-dot { background: var(--score-negative); }
+	.score--villain  { color: var(--score-villain); }
+	.score--villain .score-dot { background: var(--score-villain); }
 
 	.modal-name {
 		font-family: var(--font-serif);
@@ -346,8 +346,8 @@
 		font-family: var(--font-mono);
 	}
 
-	.timeline-score.positive { color: #22c55e; }
-	.timeline-score.negative { color: var(--color-accent); }
+	.timeline-score.positive { color: var(--score-hero); }
+	.timeline-score.negative { color: var(--score-villain); }
 
 	.timeline-metric {
 		font-size: 0.68rem;
