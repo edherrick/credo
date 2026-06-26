@@ -144,6 +144,32 @@ frontend/src/
 
 **Stylelint enforces this**: `npm run lint` (or `npm run lint:css`) flags raw `#hex`/`rgba()` where a token belongs and any `var(--typo)` not defined in `app.css` — keeping the token set discoverable and catching drift. (It already caught a missing `--radius-full` and the duplicated score-tier palette.)
 
+## Frontend Tooling
+
+The config files have **non-overlapping** roles; `npm run lint` chains all the checkers.
+
+| File | Role |
+|------|------|
+| `.prettierrc` | **Formatting only** — tabs, single-quote, `printWidth` 100, `prettier-plugin-svelte` |
+| `eslint.config.js` | **JS/TS/Svelte logic** — flat config; extends `eslint-config-prettier` *last* so it never fights Prettier on style |
+| `.stylelintrc.json` | **CSS token discipline** — checks *values* only (raw `#hex`/`rgba` + undefined `var(--token)`); no formatting rules, so no Prettier overlap |
+| `vite.config.ts` | **Build + dev/preview `/api` proxy + Vitest** (both `server` and `preview` proxies point at `:8000`) |
+| `svelte.config.js` | Svelte runes mode + `adapter-auto` (switch to `adapter-vercel` at deploy — Phase 6) |
+| `tsconfig.json` | `strict` TS; extends the SvelteKit-generated config |
+
+**Scripts** (`cd frontend`):
+
+| Command | Does |
+|---------|------|
+| `npm run dev` | Vite dev server (:5173, HMR). Or `bash dev.sh` for the full stack. |
+| `npm run check` | `svelte-check` — type-check `.svelte`/`.ts`. **Run before pushing.** |
+| `npm run lint` | Prettier check → ESLint → Stylelint (all three) |
+| `npm run lint:css` | Stylelint only (token enforcement) |
+| `npm run format` | Prettier write |
+| `npm run test:unit` | Vitest |
+| `npm run test:e2e` | Playwright (needs both servers — `bash test.sh`) |
+| `npm run build` | Production build |
+
 ## Key Rules
 
 - All API calls go through `frontend/src/lib/api.ts` — never `fetch()` directly in components
@@ -153,3 +179,4 @@ frontend/src/
 - Pydantic schemas in `schemas/` are separate from ORM models in `models/`
 - Phase 1 scope only — do not add endpoints or tables not in the spec docs
 - Icons: use `lucide-svelte` — never inline SVGs or Unicode arrows/symbols in markup
+- **Route IA — "commons + lens"** (see `docs/Decisions.md`): top-level routes are *the commons* (browse the shared library — `/explore` [nav "Credos"], `/library` hub → flat `/beliefs` `/issues` `/axes` `/metrics` `/entities`, detail `/metrics/[id]` + `/entity/[slug]`); `/credo/[username]/*` is *a lens* on one credo. Shared/canonical data → top-level; one credo's interpretation → scoped. The map is a **view mode** (rendered under `/metrics/[id]` and the credo map), not a standalone section. Building-block list pages share `lib/components/BlockList.svelte`.

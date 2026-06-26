@@ -271,7 +271,7 @@
 			</div>
 			<div class="card-grid">
 				{#each metrics as metric (metric.id)}
-					<a href={resolve(`/map?metric=${metric.id}`)} class="metric-card">
+					<a href={resolve(`/metrics/${metric.id}`)} class="metric-card">
 						<div class="metric-card-top">
 							<span class="metric-unit">{metric.unit}</span>
 						</div>

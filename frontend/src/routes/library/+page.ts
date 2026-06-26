@@ -3,7 +3,7 @@ export const ssr = false;
 import { getBeliefs, getIssues, getAxes, getMetrics, getEntities } from '$lib/api';
 
 export async function load({ fetch }: { fetch: typeof globalThis.fetch }) {
-	const [beliefsRes, issuesRes, axesRes, metricsRes, entitiesRes] = await Promise.allSettled([
+	const [beliefs, issues, axes, metrics, entities] = await Promise.allSettled([
 		getBeliefs(fetch),
 		getIssues(fetch),
 		getAxes(fetch),
@@ -11,11 +11,16 @@ export async function load({ fetch }: { fetch: typeof globalThis.fetch }) {
 		getEntities(fetch)
 	]);
 
+	const count = (r: PromiseSettledResult<unknown[]>) =>
+		r.status === 'fulfilled' ? r.value.length : 0;
+
 	return {
-		beliefs: beliefsRes.status === 'fulfilled' ? beliefsRes.value : [],
-		issues: issuesRes.status === 'fulfilled' ? issuesRes.value : [],
-		axes: axesRes.status === 'fulfilled' ? axesRes.value : [],
-		metrics: metricsRes.status === 'fulfilled' ? metricsRes.value : [],
-		entities: entitiesRes.status === 'fulfilled' ? entitiesRes.value : []
+		counts: {
+			beliefs: count(beliefs),
+			issues: count(issues),
+			axes: count(axes),
+			metrics: count(metrics),
+			entities: count(entities)
+		}
 	};
 }

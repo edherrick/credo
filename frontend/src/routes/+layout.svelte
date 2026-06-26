@@ -15,6 +15,18 @@
 	const authState = $derived($auth);
 	const currentPath = $derived(page.url.pathname);
 
+	// "Library" is the hub for all shared building-block routes (the commons).
+	const LIBRARY_PREFIXES = [
+		'/library',
+		'/beliefs',
+		'/issues',
+		'/axes',
+		'/metrics',
+		'/entities',
+		'/entity'
+	];
+	const isLibraryActive = $derived(LIBRARY_PREFIXES.some((p) => currentPath.startsWith(p)));
+
 	onMount(async () => {
 		const token = auth.loadFromStorage();
 		if (token && !$auth) {
@@ -43,7 +55,13 @@
 		<div class="nav-inner">
 			<a href={resolve('/')} class="brand">
 				<span class="brand-mark" aria-hidden="true">
-					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<svg
+						width="22"
+						height="22"
+						viewBox="0 0 24 24"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
 						<!-- Hexagonal civic seal — community structure & legitimacy -->
 						<path
 							d="M12 2.5 L20.2 7.25 L20.2 16.75 L12 21.5 L3.8 16.75 L3.8 7.25 Z"
@@ -53,18 +71,26 @@
 							fill="none"
 						/>
 						<!-- Rising trend — measurable change, evidence-backed progress -->
-						<line x1="7.8" y1="16.2" x2="16.2" y2="8.2" stroke="#7170ff" stroke-width="1.3" stroke-linecap="round"/>
-						<circle cx="7.8" cy="16.2" r="1.6" fill="#7170ff"/>
-						<circle cx="12" cy="12.2" r="1.6" fill="#7170ff"/>
-						<circle cx="16.2" cy="8.2" r="1.6" fill="#7170ff"/>
+						<line
+							x1="7.8"
+							y1="16.2"
+							x2="16.2"
+							y2="8.2"
+							stroke="#7170ff"
+							stroke-width="1.3"
+							stroke-linecap="round"
+						/>
+						<circle cx="7.8" cy="16.2" r="1.6" fill="#7170ff" />
+						<circle cx="12" cy="12.2" r="1.6" fill="#7170ff" />
+						<circle cx="16.2" cy="8.2" r="1.6" fill="#7170ff" />
 					</svg>
 				</span>
 				<span class="brand-name">Credo</span>
 			</a>
 
 			<nav class="nav-links">
-				<a href={resolve('/explore')} class:active={currentPath.startsWith('/explore')}>Explore</a>
-				<a href={resolve('/library')} class:active={currentPath.startsWith('/library')}>Library</a>
+				<a href={resolve('/explore')} class:active={currentPath.startsWith('/explore')}>Credos</a>
+				<a href={resolve('/library')} class:active={isLibraryActive}>Library</a>
 			</nav>
 
 			<button

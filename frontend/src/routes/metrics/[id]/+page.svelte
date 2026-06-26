@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import { goto } from '$app/navigation';
 	import { ArrowLeft, ChevronDown, PanelRight, Map as MapIcon } from 'lucide-svelte';
@@ -17,7 +16,8 @@
 	const allValues = $derived(data.allValues);
 	const aggregateData = $derived(data.aggregateData);
 	const metrics = $derived(data.metrics ?? []);
-	const metricId = $derived(page.url.searchParams.get('metric') ?? 'median_home_price');
+	const metricId = $derived(data.metricId);
+	const metricName = $derived(metrics.find((m) => m.id === metricId)?.display_name ?? 'Metric');
 
 	// ── Map collapse ─────────────────────────────────────────────
 	let mapCollapsed = $state(false);
@@ -59,7 +59,8 @@
 	function onSplitDown(e: PointerEvent) {
 		(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
 		_splitDragStartY = e.clientY;
-		_splitDragStartPanelsH = panelsAreaHeight ?? (e.currentTarget as HTMLElement).parentElement!.offsetHeight;
+		_splitDragStartPanelsH =
+			panelsAreaHeight ?? (e.currentTarget as HTMLElement).parentElement!.offsetHeight;
 		e.stopPropagation();
 	}
 
@@ -85,14 +86,16 @@
 		const ids = [...compareMetricIds];
 		for (const id of ids) {
 			if (!compareSeriesMap.has(id)) {
-				getMetricAggregate(id, '17').then((res) => {
-					compareSeriesMap.set(id, {
-						metricId: res.metric_id,
-						label: metrics.find((m) => m.id === id)?.display_name ?? id,
-						dates: res.dates,
-						avgValues: res.avg_values
-					});
-				}).catch(() => {});
+				getMetricAggregate(id, '17')
+					.then((res) => {
+						compareSeriesMap.set(id, {
+							metricId: res.metric_id,
+							label: metrics.find((m) => m.id === id)?.display_name ?? id,
+							dates: res.dates,
+							avgValues: res.avg_values
+						});
+					})
+					.catch(() => {});
 			}
 		}
 		for (const id of compareSeriesMap.keys()) {
@@ -102,10 +105,9 @@
 
 	$effect(() => {
 		// Sync compareMetricIds to URL without triggering a load fn re-run
-		const metric = metricId;
 		const compare = compareMetricIds.join(',');
-		const search = compare ? `?metric=${metric}&compare=${compare}` : `?metric=${metric}`;
-		history.replaceState({}, '', search);
+		const search = compare ? `?compare=${compare}` : '';
+		history.replaceState({}, '', `${location.pathname}${search}`);
 	});
 
 	function toggleCompare(id: string) {
@@ -125,14 +127,14 @@
 </script>
 
 <svelte:head>
-	<title>Chicago Metro — Median Home Price · Credo</title>
+	<title>{metricName} · Credo</title>
 </svelte:head>
 
 <div class="map-page">
 	<div class="map-header">
 		<div>
-			<h1 class="map-title">Chicago Metro Area</h1>
-			<p class="map-sub">Median Home Price · 7 counties · Illinois</p>
+			<h1 class="map-title">{metricName}</h1>
+			<p class="map-sub">Chicago Metro Area · 7 counties · Illinois</p>
 		</div>
 		<div class="header-actions">
 			<button
@@ -154,8 +156,8 @@
 			>
 				<PanelRight size={14} aria-hidden="true" />
 			</button>
-			<a href={resolve('/')} class="back-link">
-				<ArrowLeft size={14} aria-hidden="true" /> Back to home
+			<a href={resolve('/metrics')} class="back-link">
+				<ArrowLeft size={14} aria-hidden="true" /> All metrics
 			</a>
 		</div>
 	</div>
@@ -178,7 +180,7 @@
 				{compareMetricIds}
 				counties={aggregateData?.counties ?? []}
 				{hiddenCountyIds}
-				onSelectMetric={(id) => goto(resolve(`/map?metric=${id}`))}
+				onSelectMetric={(id) => goto(resolve(`/metrics/${id}`))}
 				onToggleCounty={toggleCounty}
 				onToggleCompare={toggleCompare}
 			/>
@@ -202,7 +204,7 @@
 			<!-- MetricChart panel — flex:1, fills all space above events -->
 			<div class="panel-row chart-panel" class:chart-collapsed={chartCollapsed}>
 				<div class="panel-header">
-					<span class="panel-label">Price Trend</span>
+					<span class="panel-label">Trend</span>
 					<button
 						class="collapse-btn"
 						class:expanded={!chartCollapsed}
@@ -241,10 +243,7 @@
 			></div>
 
 			<!-- EventsTrack panel — fixed height at bottom -->
-			<div
-				class="panel-row"
-				style="height: {panelEvents.collapsed ? 28 : panelEvents.height}px"
-			>
+			<div class="panel-row" style="height: {panelEvents.collapsed ? 28 : panelEvents.height}px">
 				<div class="panel-header">
 					<span class="panel-label">Events</span>
 					<button
@@ -258,9 +257,7 @@
 				</div>
 				{#if !panelEvents.collapsed}
 					<div class="panel-content">
-						<EventsTrack
-							dates={allValues.map((v) => v.period_start)}
-						/>
+						<EventsTrack dates={allValues.map((v) => v.period_start)} />
 					</div>
 				{/if}
 			</div>
@@ -355,7 +352,9 @@
 		flex-direction: row;
 		min-height: 120px;
 		overflow: hidden;
-		transition: min-height var(--transition-base), flex var(--transition-base);
+		transition:
+			min-height var(--transition-base),
+			flex var(--transition-base);
 	}
 
 	.map-body.collapsed {
@@ -455,7 +454,9 @@
 		color: var(--color-text-faint);
 		cursor: pointer;
 		border-radius: var(--radius-sm);
-		transition: color var(--transition-fast), background var(--transition-fast);
+		transition:
+			color var(--transition-fast),
+			background var(--transition-fast);
 	}
 
 	.collapse-btn:hover {
