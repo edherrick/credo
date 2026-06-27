@@ -5,7 +5,7 @@
 	import { goto } from '$app/navigation';
 	import { auth } from '$lib/stores/auth';
 	import { getMe } from '$lib/api';
-	import { Tabs } from '$lib/components/ui';
+	import { Tabs, PageHeader } from '$lib/components/ui';
 
 	let { children } = $props();
 
@@ -52,12 +52,7 @@
 </script>
 
 {#if ready && $auth}
-	<section class="account-header">
-		<div class="account-header-inner">
-			<p class="eyebrow">Your account</p>
-			<h1 class="account-title">@{$auth.user.username ?? 'you'}</h1>
-		</div>
-	</section>
+	<PageHeader eyebrow="Your account" title={`@${$auth.user.username ?? 'you'}`} />
 
 	<Tabs {tabs} variant="mono" aria-label="Account sections" />
 
@@ -69,33 +64,6 @@
 {/if}
 
 <style>
-	.account-header {
-		background: var(--color-navy);
-		color: white;
-		padding: var(--space-12) var(--space-6) var(--space-8);
-	}
-
-	.account-header-inner {
-		max-width: var(--max-width);
-		margin: 0 auto;
-	}
-
-	.eyebrow {
-		font-family: var(--font-mono);
-		font-size: 0.68rem;
-		font-weight: 600;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--text-on-navy);
-		margin-bottom: var(--space-2);
-	}
-
-	.account-title {
-		font-family: var(--font-serif);
-		font-size: clamp(1.6rem, 4vw, 2.25rem);
-		font-weight: 400;
-	}
-
 	.account-body {
 		max-width: var(--max-width);
 		margin: 0 auto;

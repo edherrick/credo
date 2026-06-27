@@ -16,12 +16,8 @@
 	let trackNode = $state<HTMLDivElement | null>(null);
 	let activeEventId = $state<string | null>(null);
 
-	const startMs = $derived(
-		dates.length ? new Date(dates[viewStart] + 'T00:00:00').getTime() : 0
-	);
-	const endMs = $derived(
-		dates.length ? new Date(dates[viewEnd] + 'T00:00:00').getTime() : 1
-	);
+	const startMs = $derived(dates.length ? new Date(dates[viewStart] + 'T00:00:00').getTime() : 0);
+	const endMs = $derived(dates.length ? new Date(dates[viewEnd] + 'T00:00:00').getTime() : 1);
 
 	function dateToPercent(isoDate: string): number {
 		const ms = new Date(isoDate + 'T00:00:00').getTime();
@@ -37,21 +33,23 @@
 	);
 
 	// Year ticks for the axis
-	const axisTicks = $derived((() => {
-		if (!dates.length) return [];
-		const startYear = new Date(dates[viewStart] + 'T00:00:00').getFullYear();
-		const endYear = new Date(dates[viewEnd] + 'T00:00:00').getFullYear();
-		const ticks: { date: string; label: string }[] = [];
-		for (let y = startYear; y <= endYear; y++) {
-			ticks.push({ date: `${y}-01-01`, label: String(y) });
-		}
-		return ticks;
-	})());
+	const axisTicks = $derived(
+		(() => {
+			if (!dates.length) return [];
+			const startYear = new Date(dates[viewStart] + 'T00:00:00').getFullYear();
+			const endYear = new Date(dates[viewEnd] + 'T00:00:00').getFullYear();
+			const ticks: { date: string; label: string }[] = [];
+			for (let y = startYear; y <= endYear; y++) {
+				ticks.push({ date: `${y}-01-01`, label: String(y) });
+			}
+			return ticks;
+		})()
+	);
 
 	const TYPE_COLORS: Record<LegislativeEvent['type'], string> = {
 		bill: 'var(--color-text)',
 		rate: 'var(--color-accent)',
-		policy: '#0d9488'
+		policy: 'var(--cat-teal)'
 	};
 
 	function toggleEvent(id: string) {
@@ -102,18 +100,24 @@
 		const { left, width } = trackNode.getBoundingClientRect();
 		const mouseRatio = Math.max(0, Math.min(1, (e.clientX - left) / width));
 		const currentLen = viewEnd - viewStart;
-		const newLen = e.deltaY < 0
-			? Math.max(2, Math.floor(currentLen / 1.5))
-			: Math.min(dates.length - 1, Math.ceil(currentLen * 1.5));
+		const newLen =
+			e.deltaY < 0
+				? Math.max(2, Math.floor(currentLen / 1.5))
+				: Math.min(dates.length - 1, Math.ceil(currentLen * 1.5));
 		const anchor = viewStart + Math.round(mouseRatio * currentLen);
-		const newStart = Math.max(0, Math.min(dates.length - 1 - newLen, Math.round(anchor - mouseRatio * newLen)));
+		const newStart = Math.max(
+			0,
+			Math.min(dates.length - 1 - newLen, Math.round(anchor - mouseRatio * newLen))
+		);
 		viewStart = newStart;
 		_viewEnd = newStart + newLen;
 	}
 
 	function trackAttachment(node: HTMLDivElement) {
 		trackNode = node;
-		return () => { trackNode = null; };
+		return () => {
+			trackNode = null;
+		};
 	}
 </script>
 
@@ -161,7 +165,12 @@
 						<div class="popover-type">{event.type}</div>
 						<div class="popover-title">{event.title}</div>
 						<div class="popover-desc">{event.description}</div>
-						<div class="popover-date">{new Date(event.date + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}</div>
+						<div class="popover-date">
+							{new Date(event.date + 'T00:00:00').toLocaleDateString('en-US', {
+								year: 'numeric',
+								month: 'short'
+							})}
+						</div>
 					</div>
 				{/if}
 			</button>

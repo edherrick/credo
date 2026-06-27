@@ -150,7 +150,7 @@
 	}
 
 	.credo-bar-sep {
-		color: rgba(255, 255, 255, 0.3);
+		color: var(--overlay-4);
 	}
 
 	.credo-bar-title {
@@ -171,9 +171,9 @@
 		gap: 0.3rem;
 		font-size: 0.75rem;
 		font-weight: 510;
-		color: rgba(255, 255, 255, 0.7);
+		color: var(--text-on-navy);
 		padding: 0.2rem 0.55rem;
-		border: 1px solid rgba(255, 255, 255, 0.15);
+		border: 1px solid var(--overlay-3);
 		border-radius: var(--radius-md);
 		transition:
 			color var(--transition-fast),
@@ -183,8 +183,8 @@
 
 	.credo-edit-link:hover {
 		color: white;
-		border-color: rgba(255, 255, 255, 0.3);
-		background: rgba(255, 255, 255, 0.06);
+		border-color: var(--overlay-4);
+		background: var(--overlay-2);
 	}
 
 	.credo-follow-btn {
@@ -215,15 +215,15 @@
 
 	/* Following = quiet outline state (the action is now "unfollow") */
 	.credo-follow-btn.following {
-		color: rgba(255, 255, 255, 0.7);
+		color: var(--text-on-navy);
 		background: transparent;
-		border-color: rgba(255, 255, 255, 0.2);
+		border-color: var(--overlay-3);
 	}
 
 	.credo-follow-btn.following:hover:not(:disabled) {
 		color: white;
-		border-color: rgba(255, 255, 255, 0.35);
-		background: rgba(255, 255, 255, 0.06);
+		border-color: var(--overlay-4);
+		background: var(--overlay-2);
 	}
 
 	.credo-follow-btn:disabled {

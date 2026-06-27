@@ -3,7 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { auth } from '$lib/stores/auth';
 	import { createCredo } from '$lib/api';
-	import { Button, Field } from '$lib/components/ui';
+	import { Button, Field, PageHeader } from '$lib/components/ui';
 
 	const authState = $derived($auth);
 
@@ -40,12 +40,10 @@
 	<title>New credo · Credo</title>
 </svelte:head>
 
-<section class="page-header">
-	<div class="page-header-inner">
-		<h1 class="page-title">New credo</h1>
-		<p class="page-sub">A credo is your worldview — beliefs, agendas, and the entities you hold accountable</p>
-	</div>
-</section>
+<PageHeader
+	title="New credo"
+	sub="A credo is your worldview — beliefs, agendas, and the entities you hold accountable"
+/>
 
 <section class="section">
 	<div class="form-wrap">
@@ -93,30 +91,6 @@
 </section>
 
 <style>
-	.page-header {
-		background: var(--color-navy);
-		color: white;
-		padding: var(--space-12) var(--space-6) var(--space-10);
-		border-bottom: 1px solid var(--color-border-strong);
-	}
-
-	.page-header-inner {
-		max-width: var(--max-width);
-		margin: 0 auto;
-	}
-
-	.page-title {
-		font-family: var(--font-serif);
-		font-size: clamp(1.75rem, 4vw, 2.5rem);
-		font-weight: 400;
-		margin-bottom: var(--space-2);
-	}
-
-	.page-sub {
-		font-size: 0.9rem;
-		color: var(--text-on-navy);
-	}
-
 	.section {
 		padding: var(--space-12) var(--space-6);
 	}

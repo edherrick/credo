@@ -34,7 +34,13 @@ Three deliberate moves carry the identity:
 | Accent (interactive) | `--color-accent` / `-dark` | CTAs, active tab, focus — **interactive only** |
 | Data — value | `--choropleth-1…5` | sequential yellow→red, the map |
 | Data — score | `--score-hero/positive/neutral/negative/villain` | diverging green→crimson |
-| On-navy overlays | `--overlay-1/2/3`, `--text-on-navy` | white fills/borders/text on the dark chrome |
+| Data — categorical | `--cat-blue/purple/teal/amber/red/gray/lime` | discrete categories: policy means, compare series, event types |
+| On-navy overlays | `--overlay-1/2/3/4`, `--text-on-navy` | white fills/borders/text/separators on the dark chrome |
+
+**Colors live in `app.css`, full stop.** CSS references `var(--token)`. Canvas / Leaflet / SVG
+contexts that can't use `var()` (the map, the chart) read the *same* tokens through
+`lib/theme.ts` (`choroplethScale()`, `compareSeriesColors()`, `accentColor()`) — never a second
+hardcoded copy. Re-theming is one edit in `app.css`.
 
 Elevation is **background luminance stepping** (deeper = darker, raised = lighter surface)
 plus thin cool borders — not heavy drop shadows.
@@ -58,6 +64,8 @@ autocomplete). Build features from these, not from copy-pasted CSS:
 - **Card** — translucent surface + cool border; `interactive` adds hover lift.
 - **Section** — serif `title` + mono `eyebrow` + `sub`; `alt` = raised surface.
 - **Badge** — mono small-caps; `tone` incl. the score tiers.
+- **Tabs** — sticky nav row on the navy chrome; `variant: sans | mono`, active tab underlined in accent. Caller passes pre-`resolve()`'d hrefs + `active`.
+- **PageHeader** — the navy page banner (mono `eyebrow` + serif `title` + `sub` + optional `actions` slot). The single source for the page-header look — every commons/account page uses it.
 - **EmptyState** — quiet, centered, action-oriented.
 
 Numbered markers (`01 / 02`) are reserved for genuinely ordered content (the Founding

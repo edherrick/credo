@@ -66,13 +66,13 @@
 	const MEANS_COLOR: Record<string, string> = {
 		incentive: 'var(--score-hero)',
 		penalty: 'var(--score-negative)',
-		mandate: '#3b82f6',
-		boycott: '#a855f7',
-		divestment: '#f59e0b',
+		mandate: 'var(--cat-blue)',
+		boycott: 'var(--cat-purple)',
+		divestment: 'var(--cat-amber)',
 		zoning: 'var(--score-positive)',
-		litigation: '#ef4444',
-		petition: '#6b7280',
-		subsidy: '#84cc16'
+		litigation: 'var(--cat-red)',
+		petition: 'var(--cat-gray)',
+		subsidy: 'var(--cat-lime)'
 	};
 </script>
 
@@ -195,7 +195,7 @@
 								<div class="means-heading">How</div>
 								<div class="means-list">
 									{#each agenda.means as am (am.means_id)}
-										{@const color = MEANS_COLOR[am.means.category.id] ?? '#6b7280'}
+										{@const color = MEANS_COLOR[am.means.category.id] ?? 'var(--cat-gray)'}
 										<div class="means-item">
 											<span class="means-badge" style="--badge-color: {color}"
 												>{am.means.category.label}</span

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { ScrollText, Layers, Compass, BarChart3, Users } from 'lucide-svelte';
+	import { PageHeader } from '$lib/components/ui';
 
 	let { data } = $props();
 	const counts = $derived(data.counts);
@@ -51,19 +52,18 @@
 
 <svelte:head><title>Library · Credo</title></svelte:head>
 
-<section class="page-header">
-	<div class="page-header-inner">
-		<p class="eyebrow">The Commons</p>
-		<h1 class="page-title">Library</h1>
-		<p class="page-sub">The shared building blocks every credo assembles from</p>
-	</div>
-</section>
+<PageHeader
+	eyebrow="The Commons"
+	title="Library"
+	sub="The shared building blocks every credo assembles from"
+/>
 
 <section class="hub">
 	<div class="hub-inner">
 		<div class="hub-grid">
 			{#each sections as s (s.key)}
 				{@const Icon = s.icon}
+				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- s.href is already resolve()'d in the sections array -->
 				<a href={s.href} class="hub-card">
 					<div class="hub-card-top">
 						<span class="hub-icon"><Icon size={18} aria-hidden="true" /></span>
@@ -78,39 +78,6 @@
 </section>
 
 <style>
-	.page-header {
-		background: var(--color-navy);
-		color: white;
-		padding: var(--space-12) var(--space-6) var(--space-10);
-	}
-
-	.page-header-inner {
-		max-width: var(--max-width);
-		margin: 0 auto;
-	}
-
-	.eyebrow {
-		font-family: var(--font-mono);
-		font-size: 0.68rem;
-		font-weight: 600;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--text-on-navy);
-		margin-bottom: var(--space-2);
-	}
-
-	.page-title {
-		font-family: var(--font-serif);
-		font-size: clamp(1.75rem, 4vw, 2.5rem);
-		font-weight: 400;
-		margin-bottom: var(--space-2);
-	}
-
-	.page-sub {
-		font-size: 0.9rem;
-		color: var(--text-on-navy);
-	}
-
 	.hub {
 		padding: var(--space-10) var(--space-6);
 	}

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import PageHeader from '$lib/components/ui/PageHeader.svelte';
 
 	// Shared presentation for a library building-block list (beliefs, issues, axes,
 	// metrics). One source of truth for the navy header + card grid; each route maps
@@ -46,13 +47,7 @@
 	{#if item.desc}<p class="card-desc">{item.desc}</p>{/if}
 {/snippet}
 
-<section class="page-header">
-	<div class="page-header-inner">
-		{#if eyebrow}<p class="eyebrow">{eyebrow}</p>{/if}
-		<h1 class="page-title">{title}</h1>
-		{#if sub}<p class="page-sub">{sub}</p>{/if}
-	</div>
-</section>
+<PageHeader {eyebrow} {title} {sub} />
 
 <section class="list-section">
 	<div class="list-inner">
@@ -85,39 +80,6 @@
 </section>
 
 <style>
-	.page-header {
-		background: var(--color-navy);
-		color: white;
-		padding: var(--space-12) var(--space-6) var(--space-10);
-	}
-
-	.page-header-inner {
-		max-width: var(--max-width);
-		margin: 0 auto;
-	}
-
-	.eyebrow {
-		font-family: var(--font-mono);
-		font-size: 0.68rem;
-		font-weight: 600;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--text-on-navy);
-		margin-bottom: var(--space-2);
-	}
-
-	.page-title {
-		font-family: var(--font-serif);
-		font-size: clamp(1.75rem, 4vw, 2.5rem);
-		font-weight: 400;
-		margin-bottom: var(--space-2);
-	}
-
-	.page-sub {
-		font-size: 0.9rem;
-		color: var(--text-on-navy);
-	}
-
 	.list-section {
 		padding: var(--space-10) var(--space-6);
 	}

@@ -129,7 +129,7 @@
 	}
 
 	.compare-status.at-limit {
-		color: #d97706; /* amber — warning that limit is reached */
+		color: var(--color-warn-text); /* amber — warning that limit is reached */
 	}
 
 	/* ── Metric rows ───────────────────────────────── */

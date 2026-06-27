@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getMetricGeoJSON, getStateMetricGeoJSON } from '../api';
 	import { theme } from '$lib/stores/theme';
+	import { choroplethScale, accentColor } from '$lib/theme';
 	import { ScanSearch } from 'lucide-svelte';
 
 	interface Props {
@@ -18,7 +19,15 @@
 		onchange: (index: number) => void;
 	}
 
-	let { metricId, geographyId, stateFips, values, selectedIndex, collapsed = false, onchange }: Props = $props();
+	let {
+		metricId,
+		geographyId,
+		stateFips,
+		values,
+		selectedIndex,
+		collapsed = false,
+		onchange
+	}: Props = $props();
 
 	let map: import('leaflet').Map | undefined;
 	let leaflet = $state<typeof import('leaflet') | null>(null);
@@ -30,8 +39,8 @@
 	let currentValue = $state<number | null>(null);
 	let currentDate = $state<string | null>(null);
 
-	// Warm sequential scale: pale yellow → deep red
-	const COLORS = ['#ffffb2', '#fecc5c', '#fd8d3c', '#f03b20', '#bd0026'];
+	// Warm sequential scale: pale yellow → deep red (sourced from --choropleth-* tokens)
+	const COLORS = choroplethScale();
 	const MIN_VALUE = 230_000;
 	const MAX_VALUE = 440_000;
 
@@ -171,11 +180,13 @@
 		const t = $theme;
 		if (!map || !leaflet || !tileLayer) return;
 		tileLayer.remove();
-		tileLayer = leaflet.tileLayer(TILE_URLS[t], {
-			attribution: TILE_ATTRIBUTION,
-			subdomains: 'abcd',
-			maxZoom: 19
-		}).addTo(map);
+		tileLayer = leaflet
+			.tileLayer(TILE_URLS[t], {
+				attribution: TILE_ATTRIBUTION,
+				subdomains: 'abcd',
+				maxZoom: 19
+			})
+			.addTo(map);
 	});
 
 	// Reload layer when selectedIndex changes — skip if this date was already loaded
@@ -206,8 +217,8 @@
 		boxZoomRect = leaflet
 			.rectangle(leaflet.latLngBounds(boxZoomStart, e.latlng), {
 				weight: 1.5,
-				color: '#f03b20',
-				fillColor: '#f03b20',
+				color: accentColor(),
+				fillColor: accentColor(),
 				fillOpacity: 0.08,
 				dashArray: '4 4'
 			})
@@ -372,7 +383,10 @@
 		cursor: pointer;
 		white-space: nowrap;
 		box-shadow: none;
-		transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+		transition:
+			background var(--transition-fast),
+			border-color var(--transition-fast),
+			color var(--transition-fast);
 	}
 
 	.box-zoom-btn:hover {

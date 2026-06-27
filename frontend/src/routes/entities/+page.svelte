@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { PageHeader } from '$lib/components/ui';
 	import type { EntityDetail } from '$lib/types';
 
 	let { data } = $props();
 	const entities = $derived(data.entities as EntityDetail[]);
 
-	const types = $derived([
-		...new Set(entities.map((e) => e.type))
-	].sort());
+	const types = $derived([...new Set(entities.map((e) => e.type))].sort());
 
 	let activeFilter = $state('all');
 
@@ -20,26 +19,27 @@
 	<title>Entities — Credo</title>
 </svelte:head>
 
-<div class="page">
-	<header class="page-header">
-		<h1 class="page-title">Entities</h1>
-		<p class="page-desc">Explore politicians, organizations, and corporations tracked in Credo.</p>
-	</header>
+<PageHeader
+	eyebrow="The Commons"
+	title="Entities"
+	sub="Politicians, organizations, and corporations tracked in Credo."
+/>
 
+<div class="page">
 	{#if types.length > 1}
 		<div class="filters">
 			<button
 				class="pill"
 				class:active={activeFilter === 'all'}
-				onclick={() => (activeFilter = 'all')}
-			>All</button>
-			{#each types as type}
+				onclick={() => (activeFilter = 'all')}>All</button
+			>
+			{#each types as type (type)}
 				<button
 					class="pill"
 					class:active={activeFilter === type}
 					data-type={type}
-					onclick={() => (activeFilter = type)}
-				>{type}</button>
+					onclick={() => (activeFilter = type)}>{type}</button
+				>
 			{/each}
 		</div>
 	{/if}
@@ -67,27 +67,7 @@
 	.page {
 		max-width: 760px;
 		margin: 0 auto;
-		padding: 3rem 1.5rem 5rem;
-	}
-
-	.page-header {
-		margin-bottom: 2rem;
-		padding-bottom: 2rem;
-		border-bottom: 1px solid var(--color-border);
-	}
-
-	.page-title {
-		font-family: var(--font-serif);
-		font-size: 2rem;
-		font-weight: 400;
-		color: var(--color-text);
-		margin-bottom: 0.5rem;
-	}
-
-	.page-desc {
-		font-size: 0.9rem;
-		color: var(--color-text-muted);
-		line-height: 1.6;
+		padding: var(--space-10) var(--space-6) var(--space-16);
 	}
 
 	/* ── Filters ─────────────────────────────────────────── */
@@ -126,9 +106,18 @@
 		background: var(--color-surface);
 	}
 
-	.pill[data-type='politician'].active { border-color: var(--entity-politician); color: var(--entity-politician); }
-	.pill[data-type='organization'].active { border-color: var(--entity-organization); color: var(--entity-organization); }
-	.pill[data-type='corporation'].active { border-color: var(--entity-corporation); color: var(--entity-corporation); }
+	.pill[data-type='politician'].active {
+		border-color: var(--entity-politician);
+		color: var(--entity-politician);
+	}
+	.pill[data-type='organization'].active {
+		border-color: var(--entity-organization);
+		color: var(--entity-organization);
+	}
+	.pill[data-type='corporation'].active {
+		border-color: var(--entity-corporation);
+		color: var(--entity-corporation);
+	}
 
 	/* ── List ────────────────────────────────────────────── */
 	.empty {
@@ -163,9 +152,15 @@
 	}
 
 	/* Left accent by type */
-	.entity-card:has(.type-badge[data-type='politician']) { border-left-color: var(--entity-politician); }
-	.entity-card:has(.type-badge[data-type='organization']) { border-left-color: var(--entity-organization); }
-	.entity-card:has(.type-badge[data-type='corporation']) { border-left-color: var(--entity-corporation); }
+	.entity-card:has(.type-badge[data-type='politician']) {
+		border-left-color: var(--entity-politician);
+	}
+	.entity-card:has(.type-badge[data-type='organization']) {
+		border-left-color: var(--entity-organization);
+	}
+	.entity-card:has(.type-badge[data-type='corporation']) {
+		border-left-color: var(--entity-corporation);
+	}
 
 	/* ── Type badge ──────────────────────────────────────── */
 	.type-badge {
@@ -176,14 +171,23 @@
 		text-transform: uppercase;
 		padding: 0.15rem 0.45rem;
 		border-radius: var(--radius-sm);
-		background: rgba(255,255,255,0.06);
+		background: var(--color-border);
 		color: var(--color-text-faint);
 		white-space: nowrap;
 	}
 
-	.type-badge[data-type='politician'] { color: var(--entity-politician); background: rgba(74,143,212,0.12); }
-	.type-badge[data-type='organization'] { color: var(--entity-organization); background: rgba(61,176,122,0.12); }
-	.type-badge[data-type='corporation'] { color: var(--entity-corporation); background: rgba(232,168,56,0.12); }
+	.type-badge[data-type='politician'] {
+		color: var(--entity-politician);
+		background: color-mix(in srgb, var(--entity-politician) 12%, transparent);
+	}
+	.type-badge[data-type='organization'] {
+		color: var(--entity-organization);
+		background: color-mix(in srgb, var(--entity-organization) 12%, transparent);
+	}
+	.type-badge[data-type='corporation'] {
+		color: var(--entity-corporation);
+		background: color-mix(in srgb, var(--entity-corporation) 12%, transparent);
+	}
 
 	.entity-name {
 		grid-row: 1;

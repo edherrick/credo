@@ -8,9 +8,9 @@
 /* ── Tokens ────────────────────────────────────────────── */
 :root {
 	/* Brand */
-	--color-navy: #07111e;       /* nav bar — deepest surface */
+	--color-navy: #07111e; /* nav bar — deepest surface */
 	--color-navy-light: #0e1d30; /* hover states on nav */
-	--color-accent: #f03b20;     /* red-orange — blazes on dark */
+	--color-accent: #f03b20; /* red-orange — blazes on dark */
 	--color-accent-dark: #d63418;
 
 	/* Choropleth scale (yellow → red) */
@@ -21,9 +21,9 @@
 	--choropleth-5: #bd0026;
 
 	/* Neutrals — deep slate dark theme */
-	--color-bg: #0c1929;      /* page body — ink navy */
+	--color-bg: #0c1929; /* page body — ink navy */
 	--color-surface: #132338; /* cards, panels, raised surfaces */
-	--color-border: #1c3252;  /* subtle separators */
+	--color-border: #1c3252; /* subtle separators */
 	--color-border-strong: #2b4a72; /* visible separators */
 
 	/* White overlays on the always-navy chrome (nav, credo bar). Theme-independent
@@ -31,6 +31,7 @@
 	--overlay-1: rgba(255, 255, 255, 0.04); /* faint fill / hover */
 	--overlay-2: rgba(255, 255, 255, 0.08); /* hairline border / hover-strong */
 	--overlay-3: rgba(255, 255, 255, 0.14); /* visible border on navy */
+	--overlay-4: rgba(255, 255, 255, 0.26); /* strong border / separator on navy */
 	--text-on-navy: rgba(255, 255, 255, 0.62); /* muted text on the navy chrome */
 
 	/* Text — cool off-white, not harsh pure white */
@@ -46,11 +47,23 @@
 	/* Accountability scale — entity/credo scoring (hero → villain). A diverging
 	   good→bad scale, distinct from the sequential choropleth. Data-red is deep
 	   crimson, NOT the brand accent, so an "active/live" red never reads as "bad". */
-	--score-hero: #22c55e;     /* green   — strongly aligned */
+	--score-hero: #22c55e; /* green   — strongly aligned */
 	--score-positive: #14b8a6; /* teal    — aligned */
-	--score-neutral: #6080a0;  /* slate   — neutral / unknown */
+	--score-neutral: #6080a0; /* slate   — neutral / unknown */
 	--score-negative: #f97316; /* orange  — misaligned */
-	--score-villain: #bd0026;  /* crimson — strongly opposed (== choropleth-5) */
+	--score-villain: #bd0026; /* crimson — strongly opposed (== choropleth-5) */
+
+	/* Categorical data palette — discrete (non-scale) category colors used by the
+	   policy-means taxonomy, compare series, and event types. Theme-independent
+	   (these are data, not chrome). The single source for these; JS canvas reads
+	   them via lib/theme.ts. */
+	--cat-blue: #3b82f6;
+	--cat-purple: #7c3aed;
+	--cat-teal: #0d9488;
+	--cat-amber: #f59e0b;
+	--cat-red: #ef4444;
+	--cat-gray: #6b7280;
+	--cat-lime: #84cc16;
 
 	/* Semantic */
 	--color-error-bg: rgba(240, 59, 32, 0.12);
@@ -104,7 +117,7 @@
 }
 
 /* ── Light theme overrides ──────────────────────────────── */
-[data-theme="light"] {
+[data-theme='light'] {
 	--color-bg: #f4f2ef;
 	--color-surface: #ffffff;
 	--color-border: #e2dcd6;
@@ -117,13 +130,13 @@
 	--color-error-bg: rgba(240, 59, 32, 0.08);
 	--color-error-border: rgba(240, 59, 32, 0.25);
 	--color-error-text: #c0392b;
-	--color-warn-bg: rgba(245, 158, 11, 0.10);
+	--color-warn-bg: rgba(245, 158, 11, 0.1);
 	--color-warn-text: #92640a;
 
 	--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.05);
-	--shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+	--shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
 	--shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.14);
-	--shadow-accent: 0 4px 20px rgba(240, 59, 32, 0.20);
+	--shadow-accent: 0 4px 20px rgba(240, 59, 32, 0.2);
 }
 
 /* ── Theme transition ───────────────────────────────────── */
@@ -149,7 +162,7 @@ html {
 
 body {
 	font-family: var(--font-sans);
-	font-feature-settings: "cv01", "ss03";
+	font-feature-settings: 'cv01', 'ss03';
 	background: var(--color-bg);
 	color: var(--color-text);
 	line-height: 1.6;

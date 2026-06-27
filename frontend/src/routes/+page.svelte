@@ -173,7 +173,7 @@
 
 	.hero-sub {
 		font-size: 1.05rem;
-		color: rgba(255, 255, 255, 0.65);
+		color: var(--text-on-navy);
 		max-width: 540px;
 		line-height: 1.7;
 		margin-bottom: var(--space-10);
@@ -215,7 +215,7 @@
 	}
 
 	.cta-ghost {
-		color: rgba(255, 255, 255, 0.6);
+		color: var(--text-on-navy);
 		font-size: 0.9rem;
 		font-weight: 500;
 		transition: color var(--transition-fast);
@@ -365,7 +365,7 @@
 
 	.cta-strip-sub {
 		font-size: 0.9rem;
-		color: rgba(255, 255, 255, 0.55);
+		color: var(--text-on-navy);
 		max-width: 420px;
 	}
 

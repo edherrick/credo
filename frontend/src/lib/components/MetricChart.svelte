@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { CountySeries, MetricSeries } from '../types';
+	import { compareSeriesColors } from '$lib/theme';
 
 	interface Props {
 		dates: string[];
@@ -36,7 +37,7 @@
 	const PAD_TOP = 10;
 	const PAD_BOTTOM = 30; // extra space for x-axis labels
 
-	const COMPARE_COLORS = ['#0d9488', '#7c3aed']; // teal, purple
+	const COMPARE_COLORS = compareSeriesColors(); // teal, purple (--cat-teal/--cat-purple)
 
 	const INSET_RIGHT = $derived(compareSeries.length > 0 ? 48 : 16);
 
@@ -77,9 +78,7 @@
 
 	// Index within the current view window
 	const localSelectedIndex = $derived(
-		selectedIndex >= viewStart && selectedIndex <= viewEnd
-			? selectedIndex - viewStart
-			: -1
+		selectedIndex >= viewStart && selectedIndex <= viewEnd ? selectedIndex - viewStart : -1
 	);
 
 	function dateToX(i: number): number {
@@ -204,9 +203,10 @@
 		const mouseRatio = Math.max(0, Math.min(1, (e.clientX - rect.left - INSET_LEFT) / trackWidth));
 
 		const currentLen = viewEnd - viewStart;
-		const newLen = e.deltaY < 0
-			? Math.max(3, Math.floor(currentLen / 1.5))
-			: Math.min(dates.length - 1, Math.ceil(currentLen * 1.5));
+		const newLen =
+			e.deltaY < 0
+				? Math.max(3, Math.floor(currentLen / 1.5))
+				: Math.min(dates.length - 1, Math.ceil(currentLen * 1.5));
 
 		const anchor = viewStart + Math.round(mouseRatio * currentLen);
 		const newStart = Math.round(anchor - mouseRatio * newLen);
@@ -245,8 +245,10 @@
 			<!-- Grid: horizontal lines at Y-tick positions -->
 			{#each yTicks as tick (tick.v)}
 				<line
-					x1={INSET_LEFT} y1={valueToY(tick.v)}
-					x2={svgWidth - INSET_RIGHT} y2={valueToY(tick.v)}
+					x1={INSET_LEFT}
+					y1={valueToY(tick.v)}
+					x2={svgWidth - INSET_RIGHT}
+					y2={valueToY(tick.v)}
 					stroke="var(--color-border)"
 					stroke-width="1"
 					stroke-dasharray="3 4"
@@ -259,8 +261,10 @@
 			{#each viewDates as d, i (viewStart + i)}
 				{#if i % labelStep === 0}
 					<line
-						x1={dateToX(i)} y1={PAD_TOP}
-						x2={dateToX(i)} y2={svgHeight - PAD_BOTTOM}
+						x1={dateToX(i)}
+						y1={PAD_TOP}
+						x2={dateToX(i)}
+						y2={svgHeight - PAD_BOTTOM}
 						stroke="var(--color-border)"
 						stroke-width="1"
 						stroke-dasharray="3 4"
@@ -273,20 +277,41 @@
 			<!-- County lines (faint — behind avg line) -->
 			{#each viewCounties as county (county.id)}
 				{#each toSegments(county.values) as seg, si (`${county.id}-${si}`)}
-					<polyline points={seg} fill="none" stroke="var(--color-border-strong)" stroke-width="1" opacity="0.22" />
+					<polyline
+						points={seg}
+						fill="none"
+						stroke="var(--color-border-strong)"
+						stroke-width="1"
+						opacity="0.22"
+					/>
 				{/each}
 			{/each}
 
 			<!-- Average line (primary metric) -->
 			{#each toSegments(viewAvgValues) as seg, si (`avg-${si}`)}
-				<polyline points={seg} fill="none" stroke="var(--color-accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
+				<polyline
+					points={seg}
+					fill="none"
+					stroke="var(--color-accent)"
+					stroke-width="2.5"
+					stroke-linejoin="round"
+					stroke-linecap="round"
+				/>
 			{/each}
 
 			<!-- Compare series overlay lines -->
 			{#each viewAlignedCompareSeries as series, ci}
 				{@const color = COMPARE_COLORS[ci % COMPARE_COLORS.length]}
 				{#each toSegments(series.viewValues) as seg, si (`cmp-${ci}-${si}`)}
-					<polyline points={seg} fill="none" stroke={color} stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.85" />
+					<polyline
+						points={seg}
+						fill="none"
+						stroke={color}
+						stroke-width="2"
+						stroke-linejoin="round"
+						stroke-linecap="round"
+						opacity="0.85"
+					/>
 				{/each}
 				<!-- Right-edge label -->
 				{#if svgHeight > 0}
@@ -298,8 +323,8 @@
 							font-size="0.55rem"
 							fill={color}
 							dominant-baseline="middle"
-							pointer-events="none"
-						>{series.label.split(' ').slice(0, 2).join(' ')}</text>
+							pointer-events="none">{series.label.split(' ').slice(0, 2).join(' ')}</text
+						>
 					{/if}
 				{/if}
 			{/each}
@@ -308,8 +333,10 @@
 			{#if localSelectedIndex >= 0}
 				{@const cx = dateToX(localSelectedIndex)}
 				<line
-					x1={cx} y1={PAD_TOP}
-					x2={cx} y2={svgHeight - PAD_BOTTOM}
+					x1={cx}
+					y1={PAD_TOP}
+					x2={cx}
+					y2={svgHeight - PAD_BOTTOM}
 					stroke="var(--color-accent)"
 					stroke-width="1.5"
 					stroke-dasharray="3 3"
@@ -318,8 +345,10 @@
 				/>
 				<!-- Wide invisible hit area for dragging -->
 				<rect
-					x={cx - 8} y={PAD_TOP}
-					width={16} height={svgHeight - PAD_TOP - PAD_BOTTOM}
+					x={cx - 8}
+					y={PAD_TOP}
+					width={16}
+					height={svgHeight - PAD_TOP - PAD_BOTTOM}
 					fill="transparent"
 					style="cursor: ew-resize;"
 					role="presentation"
@@ -328,27 +357,25 @@
 					onpointerup={onCursorUp}
 				/>
 				<!-- Cursor handle dot -->
-				<circle
-					cx={cx} cy={PAD_TOP + 4}
-					r={4}
-					fill="var(--color-accent)"
-					pointer-events="none"
-				/>
+				<circle {cx} cy={PAD_TOP + 4} r={4} fill="var(--color-accent)" pointer-events="none" />
 			{/if}
 
 			<!-- Y-axis labels -->
 			{#each yTicks as tick (tick.v)}
-				<text x={INSET_LEFT - 6} y={valueToY(tick.v) + 4} text-anchor="end" class="y-label">{tick.label}</text>
+				<text x={INSET_LEFT - 6} y={valueToY(tick.v) + 4} text-anchor="end" class="y-label"
+					>{tick.label}</text
+				>
 			{/each}
 
 			<!-- Section label -->
 			{#if svgHeight > 0}
 				<text
-					x={7} y={svgHeight / 2}
+					x={7}
+					y={svgHeight / 2}
 					transform="rotate(-90, 7, {svgHeight / 2})"
 					text-anchor="middle"
-					class="chart-gutter-label"
-				>{compareSeries.length > 0 ? 'Comparison' : 'Metro Avg.'}</text>
+					class="chart-gutter-label">{compareSeries.length > 0 ? 'Comparison' : 'Metro Avg.'}</text
+				>
 			{/if}
 
 			<!-- X-axis date labels -->
@@ -359,15 +386,17 @@
 						y={svgHeight - 6}
 						text-anchor="middle"
 						class="x-label"
-						class:x-label-active={viewStart + i === selectedIndex}
-					>{formatYear(d)}</text>
+						class:x-label-active={viewStart + i === selectedIndex}>{formatYear(d)}</text
+					>
 				{/if}
 			{/each}
 
 			<!-- X-axis baseline -->
 			<line
-				x1={INSET_LEFT} y1={svgHeight - PAD_BOTTOM}
-				x2={svgWidth - INSET_RIGHT} y2={svgHeight - PAD_BOTTOM}
+				x1={INSET_LEFT}
+				y1={svgHeight - PAD_BOTTOM}
+				x2={svgWidth - INSET_RIGHT}
+				y2={svgHeight - PAD_BOTTOM}
 				stroke="var(--color-border)"
 				stroke-width="1"
 			/>
