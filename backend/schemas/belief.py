@@ -20,3 +20,11 @@ class CredoBeliefOut(BaseModel):
     belief: BeliefOut
     display_order: int
     notes: str | None
+
+
+class CredoBeliefCreate(BaseModel):
+    """Add an existing library belief to a credo (owner-scoped write)."""
+
+    belief_id: uuid.UUID
+    notes: str | None = None
+    display_order: int = 0

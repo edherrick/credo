@@ -1,3 +1,4 @@
+import uuid
 from collections import defaultdict
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -8,15 +9,31 @@ from sqlalchemy.orm import selectinload
 
 from database import get_db
 from models.agenda import Agenda
-from models.credo import CredoBelief, Credo, CredoEntity, Entity, EntityEvent
+from models.credo import (
+    Belief,
+    CredoBelief,
+    Credo,
+    CredoEntity,
+    CredoSubscription,
+    Entity,
+    EntityEvent,
+)
 from models.user import User
 from routes.auth import current_active_user
-from schemas.belief import CredoBeliefOut
+from schemas.belief import CredoBeliefCreate, CredoBeliefOut
 from schemas.credo import CredoCreate, CredoOut, CredoSummaryOut, CredoUpdate
 from schemas.entity import CredoEntityOut, EntityEventOut
 from serializers import build_agenda_outs
 
 router = APIRouter(prefix="/api/v1/credos", tags=["credos"])
+
+
+async def _load_credo(username: str, db: AsyncSession) -> Credo:
+    """Resolve a credo by handle or raise 404. Shared by owner-scoped and follow writes."""
+    credo = await db.scalar(select(Credo).where(Credo.username == username))
+    if not credo:
+        raise HTTPException(status_code=404, detail="Credo not found")
+    return credo
 
 
 async def get_owned_credo(
@@ -30,9 +47,7 @@ async def get_owned_credo(
     the object, 404 if missing, 403 if the authenticated user is not the owner.
     Reuse it as a dependency on any owner-only write endpoint under /{username}.
     """
-    credo = await db.scalar(select(Credo).where(Credo.username == username))
-    if not credo:
-        raise HTTPException(status_code=404, detail="Credo not found")
+    credo = await _load_credo(username, db)
     if credo.owner_id != user.id:
         raise HTTPException(status_code=403, detail="Not authorized to modify this credo")
     return credo
@@ -41,6 +56,25 @@ async def get_owned_credo(
 @router.get("", response_model=list[CredoSummaryOut])
 async def list_credos(db: AsyncSession = Depends(get_db)) -> list[CredoSummaryOut]:
     result = await db.scalars(select(Credo).order_by(Credo.created_at.desc()))
+    return [CredoSummaryOut.model_validate(c) for c in result.all()]
+
+
+@router.get("/following", response_model=list[CredoSummaryOut])
+async def list_following(
+    user: User = Depends(current_active_user),
+    db: AsyncSession = Depends(get_db),
+) -> list[CredoSummaryOut]:
+    """Credos the authenticated user follows, newest first.
+
+    Declared before the dynamic ``/{username}`` route so "following" isn't parsed
+    as a credo handle.
+    """
+    result = await db.scalars(
+        select(Credo)
+        .join(CredoSubscription, CredoSubscription.credo_id == Credo.id)
+        .where(CredoSubscription.user_id == user.id)
+        .order_by(Credo.created_at.desc())
+    )
     return [CredoSummaryOut.model_validate(c) for c in result.all()]
 
 
@@ -173,3 +207,82 @@ async def delete_credo(
             status_code=409,
             detail="Credo still has linked agendas; detach them before deleting.",
         ) from exc
+
+
+# ── Follow / unfollow ────────────────────────────────────────────────────────
+# Self-membership writes: the caller toggles only their own subscription row, so
+# no ownership check — any authenticated user may follow any credo. Both verbs are
+# idempotent (the (user, credo) primary key makes a repeat follow a no-op).
+
+
+@router.post("/{username}/follow", status_code=status.HTTP_204_NO_CONTENT)
+async def follow_credo(
+    username: str,
+    user: User = Depends(current_active_user),
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    """Follow a credo. No-op if already following."""
+    credo = await _load_credo(username, db)
+    existing = await db.get(CredoSubscription, (user.id, credo.id))
+    if existing is None:
+        db.add(CredoSubscription(user_id=user.id, credo_id=credo.id))
+        await db.commit()
+
+
+@router.delete("/{username}/follow", status_code=status.HTTP_204_NO_CONTENT)
+async def unfollow_credo(
+    username: str,
+    user: User = Depends(current_active_user),
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    """Unfollow a credo. No-op if not currently following."""
+    credo = await _load_credo(username, db)
+    existing = await db.get(CredoSubscription, (user.id, credo.id))
+    if existing is not None:
+        await db.delete(existing)
+        await db.commit()
+
+
+# ── Credo founding beliefs (owner-scoped) ────────────────────────────────────
+# Mutating a credo's belief set is an owner-scoped write on the credo itself, so
+# it reuses get_owned_credo — no new authz mechanism needed. (A credo's beliefs
+# are a sub-resource of the credo, unlike the self-membership saves on /beliefs.)
+
+
+@router.post("/{username}/beliefs", status_code=status.HTTP_201_CREATED)
+async def add_credo_belief(
+    payload: CredoBeliefCreate,
+    credo: Credo = Depends(get_owned_credo),
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    """Adopt an existing library belief into a credo you own. 409 if already present."""
+    belief = await db.get(Belief, payload.belief_id)
+    if belief is None:
+        raise HTTPException(status_code=404, detail="Belief not found")
+    existing = await db.get(CredoBelief, (credo.id, payload.belief_id))
+    if existing is not None:
+        raise HTTPException(status_code=409, detail="That belief is already in this credo")
+    db.add(
+        CredoBelief(
+            credo_id=credo.id,
+            belief_id=payload.belief_id,
+            display_order=payload.display_order,
+            notes=payload.notes,
+        )
+    )
+    await db.commit()
+
+
+@router.delete(
+    "/{username}/beliefs/{belief_id}", status_code=status.HTTP_204_NO_CONTENT
+)
+async def remove_credo_belief(
+    belief_id: uuid.UUID,
+    credo: Credo = Depends(get_owned_credo),
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    """Remove a belief from a credo you own. No-op if not present."""
+    existing = await db.get(CredoBelief, (credo.id, belief_id))
+    if existing is not None:
+        await db.delete(existing)
+        await db.commit()

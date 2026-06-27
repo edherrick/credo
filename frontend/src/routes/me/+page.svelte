@@ -1,129 +1,95 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { auth } from '$lib/stores/auth';
-	import { getMe } from '$lib/api';
-	import { goto } from '$app/navigation';
-	import type { User } from '$lib/types';
 	import { resolve } from '$app/paths';
-	import { ArrowLeft } from 'lucide-svelte';
-
-	let user = $state<User | null>(null);
-	let loading = $state(true);
-
-	onMount(async () => {
-		// Try store first, then localStorage token
-		let token: string | null = null;
-		const unsubscribe = auth.subscribe((state) => {
-			token = state?.token ?? null;
-			user = state?.user ?? null;
-		});
-		unsubscribe();
-
-		if (!token) {
-			token = auth.loadFromStorage();
-		}
-		if (!token) {
-			goto(resolve('/login'));
-			return;
-		}
-		try {
-			const fetched = await getMe(token);
-			auth.login(token, fetched);
-			user = fetched;
-		} catch {
-			auth.logout();
-			goto(resolve('/login'));
-		} finally {
-			loading = false;
-		}
-	});
-
-	function handleLogout() {
-		auth.logout();
-		goto(resolve('/'));
-	}
+	import { auth } from '$lib/stores/auth';
+	import { Card } from '$lib/components/ui';
+	import { ArrowRight } from 'lucide-svelte';
 </script>
 
-<main>
-	{#if loading}
-		<p>Loading…</p>
-	{:else if user}
-		<h1>My Profile</h1>
-		<dl>
-			<dt>Username</dt>
-			<dd>{user.username ?? '—'}</dd>
-			<dt>Email</dt>
-			<dd>{user.email}</dd>
-			<dt>Member since</dt>
-			<dd>{new Date(user.created_at).toLocaleDateString()}</dd>
-		</dl>
-		<button onclick={handleLogout}>Log out</button>
-		<a href={resolve('/')} class="back-link"><ArrowLeft size={14} aria-hidden="true" /> Home</a>
-	{/if}
-</main>
+<svelte:head><title>Profile · Credo</title></svelte:head>
+
+{#if $auth}
+	<div class="profile">
+		<Card>
+			<dl class="details">
+				<dt>Username</dt>
+				<dd>{$auth.user.username ?? '—'}</dd>
+				<dt>Email</dt>
+				<dd>{$auth.user.email}</dd>
+				<dt>Member since</dt>
+				<dd>{new Date($auth.user.created_at).toLocaleDateString()}</dd>
+			</dl>
+		</Card>
+
+		<a href={resolve('/me/credos')} class="next-card">
+			<span>
+				<span class="next-label">Your credos</span>
+				<span class="next-sub">The credos you've created and maintain</span>
+			</span>
+			<ArrowRight size={16} aria-hidden="true" />
+		</a>
+	</div>
+{/if}
 
 <style>
-	main {
-		max-width: 500px;
-		margin: var(--space-16) auto;
-		padding: 0 var(--space-6);
+	.profile {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+		max-width: var(--max-width-text);
 	}
 
-	h1 {
-		font-family: var(--font-serif);
-		font-size: 1.6rem;
-		font-weight: 400;
-		color: var(--color-text);
-		margin-bottom: var(--space-8);
-	}
-
-	dl {
+	.details {
 		display: grid;
-		grid-template-columns: 120px 1fr;
-		gap: var(--space-2) var(--space-4);
-		margin-bottom: var(--space-8);
+		grid-template-columns: 140px 1fr;
+		gap: var(--space-3) var(--space-4);
 	}
 
 	dt {
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
 		font-weight: 600;
-		color: var(--color-text-muted);
-		font-size: 0.875rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--color-text-faint);
+		align-self: center;
 	}
 
 	dd {
 		color: var(--color-text);
-		font-size: 0.875rem;
+		font-size: 0.9rem;
 	}
 
-	button {
-		padding: var(--space-2) var(--space-5);
-		background: var(--color-accent);
-		color: white;
-		border: none;
-		border-radius: var(--radius-md);
-		cursor: pointer;
-		font-family: inherit;
-		font-size: 0.875rem;
-		font-weight: 500;
-		transition: background var(--transition-fast);
-	}
-
-	button:hover {
-		background: var(--color-accent-dark);
-	}
-
-	.back-link {
-		display: inline-flex;
+	.next-card {
+		display: flex;
 		align-items: center;
-		gap: 0.3rem;
-		margin-top: var(--space-4);
-		font-size: 0.85rem;
-		font-weight: 500;
+		justify-content: space-between;
+		gap: var(--space-4);
+		padding: var(--space-5) var(--space-6);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		background: var(--color-surface);
 		color: var(--color-text-muted);
-		transition: color var(--transition-fast);
+		transition:
+			border-color var(--transition-fast),
+			color var(--transition-fast);
 	}
 
-	.back-link:hover {
+	.next-card:hover {
+		border-color: var(--color-accent);
 		color: var(--color-text);
+	}
+
+	.next-label {
+		display: block;
+		font-family: var(--font-serif);
+		font-size: 1.05rem;
+		color: var(--color-text);
+	}
+
+	.next-sub {
+		display: block;
+		font-size: 0.82rem;
+		color: var(--color-text-muted);
+		margin-top: 0.15rem;
 	}
 </style>

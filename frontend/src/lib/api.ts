@@ -1,4 +1,20 @@
-import type { Agenda, Axis, Belief, AuthToken, Credo, CredoCreateInput, CredoSummary, CredoUpdateInput, EntityDetail, Geography, Issue, Metric, MetricAggregateResponse, MetricValuesResponse, User } from './types';
+import type {
+	Agenda,
+	Axis,
+	Belief,
+	AuthToken,
+	Credo,
+	CredoCreateInput,
+	CredoSummary,
+	CredoUpdateInput,
+	EntityDetail,
+	Geography,
+	Issue,
+	Metric,
+	MetricAggregateResponse,
+	MetricValuesResponse,
+	User
+} from './types';
 
 const BASE = '/api/v1';
 
@@ -141,10 +157,88 @@ export async function deleteCredo(token: string, username: string): Promise<void
 	}
 }
 
+export async function getFollowing(token: string, fetchFn: Fetch = fetch): Promise<CredoSummary[]> {
+	const res = await fetchFn(`${BASE}/credos/following`, { headers: authHeaders(token) });
+	if (!res.ok) throw new Error('Failed to fetch followed credos');
+	return res.json();
+}
+
+export async function followCredo(token: string, username: string): Promise<void> {
+	const res = await fetch(`${BASE}/credos/${username}/follow`, {
+		method: 'POST',
+		headers: authHeaders(token)
+	});
+	if (!res.ok) throw new Error('Failed to follow credo');
+}
+
+export async function unfollowCredo(token: string, username: string): Promise<void> {
+	const res = await fetch(`${BASE}/credos/${username}/follow`, {
+		method: 'DELETE',
+		headers: authHeaders(token)
+	});
+	if (!res.ok) throw new Error('Failed to unfollow credo');
+}
+
 export async function getBeliefs(fetchFn: Fetch = fetch): Promise<Belief[]> {
 	const res = await fetchFn(`${BASE}/beliefs`);
 	if (!res.ok) throw new Error('Failed to fetch beliefs');
 	return res.json();
+}
+
+export async function getBelief(id: string, fetchFn: Fetch = fetch): Promise<Belief> {
+	const res = await fetchFn(`${BASE}/beliefs/${id}`);
+	if (!res.ok) throw new Error('Belief not found');
+	return res.json();
+}
+
+export async function getSavedBeliefs(token: string, fetchFn: Fetch = fetch): Promise<Belief[]> {
+	const res = await fetchFn(`${BASE}/beliefs/saved`, { headers: authHeaders(token) });
+	if (!res.ok) throw new Error('Failed to fetch saved beliefs');
+	return res.json();
+}
+
+export async function saveBelief(token: string, beliefId: string): Promise<void> {
+	const res = await fetch(`${BASE}/beliefs/${beliefId}/save`, {
+		method: 'POST',
+		headers: authHeaders(token)
+	});
+	if (!res.ok) throw new Error('Failed to save belief');
+}
+
+export async function unsaveBelief(token: string, beliefId: string): Promise<void> {
+	const res = await fetch(`${BASE}/beliefs/${beliefId}/save`, {
+		method: 'DELETE',
+		headers: authHeaders(token)
+	});
+	if (!res.ok) throw new Error('Failed to unsave belief');
+}
+
+export async function addBeliefToCredo(
+	token: string,
+	username: string,
+	beliefId: string
+): Promise<void> {
+	const res = await fetch(`${BASE}/credos/${username}/beliefs`, {
+		method: 'POST',
+		headers: jsonAuthHeaders(token),
+		body: JSON.stringify({ belief_id: beliefId })
+	});
+	if (!res.ok) {
+		const err = await res.json().catch(() => ({}));
+		throw new Error(err.detail ?? 'Failed to add belief to credo');
+	}
+}
+
+export async function removeBeliefFromCredo(
+	token: string,
+	username: string,
+	beliefId: string
+): Promise<void> {
+	const res = await fetch(`${BASE}/credos/${username}/beliefs/${beliefId}`, {
+		method: 'DELETE',
+		headers: authHeaders(token)
+	});
+	if (!res.ok) throw new Error('Failed to remove belief from credo');
 }
 
 export async function getIssues(fetchFn: Fetch = fetch): Promise<Issue[]> {

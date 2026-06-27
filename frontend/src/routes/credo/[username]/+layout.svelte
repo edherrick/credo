@@ -2,7 +2,9 @@
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import { auth } from '$lib/stores/auth';
-	import { Pencil } from 'lucide-svelte';
+	import { getFollowing, followCredo, unfollowCredo } from '$lib/api';
+	import { Tabs } from '$lib/components/ui';
+	import { Pencil, Plus, Check } from 'lucide-svelte';
 
 	let { data, children } = $props();
 
@@ -10,12 +12,60 @@
 	const username = $derived(credo.username);
 	const isOwner = $derived(!!$auth && $auth.user.id === credo.owner_id);
 
+	// ── Follow state ─────────────────────────────────────────────
+	const token = $derived($auth?.token ?? null);
+	const showFollow = $derived(!!token && !isOwner);
+	let following = $state<boolean | null>(null); // null = unknown / loading
+	let followBusy = $state(false);
+
+	$effect(() => {
+		const u = username;
+		const t = token;
+		if (!t || isOwner) {
+			following = null;
+			return;
+		}
+		let cancelled = false;
+		getFollowing(t)
+			.then((list) => {
+				if (!cancelled) following = list.some((c) => c.username === u);
+			})
+			.catch(() => {
+				if (!cancelled) following = null;
+			});
+		return () => {
+			cancelled = true;
+		};
+	});
+
+	async function toggleFollow() {
+		if (!token || following === null) return;
+		const next = !following;
+		followBusy = true;
+		try {
+			if (next) await followCredo(token, username);
+			else await unfollowCredo(token, username);
+			following = next;
+		} catch {
+			// leave state unchanged on failure
+		} finally {
+			followBusy = false;
+		}
+	}
+
 	const path = $derived(page.url.pathname);
 	const isOverview = $derived(path === `/credo/${username}` || path === `/credo/${username}/`);
 	const isMap = $derived(path.endsWith('/map'));
 	const isTimeline = $derived(path.endsWith('/timeline'));
 	const isBoard = $derived(path.endsWith('/board'));
 	const canEdit = $derived(isOwner && !path.endsWith('/edit'));
+
+	const tabs = $derived([
+		{ label: 'Overview', href: resolve(`/credo/${username}`), active: isOverview },
+		{ label: 'Map', href: resolve(`/credo/${username}/map`), active: isMap },
+		{ label: 'Timeline', href: resolve(`/credo/${username}/timeline`), active: isTimeline },
+		{ label: 'Board', href: resolve(`/credo/${username}/board`), active: isBoard }
+	]);
 </script>
 
 <!-- Data tabs (!isOverview) fill the viewport; Overview scrolls. The bar + tabs are
@@ -31,19 +81,26 @@
 				<a href={resolve(`/credo/${username}/edit`)} class="credo-edit-link">
 					<Pencil size={13} aria-hidden="true" /> Edit
 				</a>
+			{:else if showFollow}
+				<button
+					class="credo-follow-btn"
+					class:following={following === true}
+					onclick={toggleFollow}
+					disabled={following === null || followBusy}
+					aria-pressed={following === true}
+				>
+					{#if following}
+						<Check size={13} aria-hidden="true" /> Following
+					{:else}
+						<Plus size={13} aria-hidden="true" /> Follow
+					{/if}
+				</button>
 			{/if}
 		</div>
 	</section>
 
 	<!-- Tab bar -->
-	<nav class="credo-tabs">
-		<div class="tabs-inner">
-			<a href={resolve(`/credo/${username}`)} class:active={isOverview}>Overview</a>
-			<a href={resolve(`/credo/${username}/map`)} class:active={isMap}>Map</a>
-			<a href={resolve(`/credo/${username}/timeline`)} class:active={isTimeline}>Timeline</a>
-			<a href={resolve(`/credo/${username}/board`)} class:active={isBoard}>Board</a>
-		</div>
-	</nav>
+	<Tabs {tabs} aria-label="Credo sections" />
 
 	<div class="credo-content">
 		{@render children()}
@@ -130,43 +187,47 @@
 		background: rgba(255, 255, 255, 0.06);
 	}
 
-	/* ── Tab bar ─────────────────────────────────────────── */
-	.credo-tabs {
-		background: var(--color-navy);
-		/* Neutral cool divider — the red is reserved for the active-tab underline. */
-		border-bottom: 1px solid var(--color-border-strong);
-		position: sticky;
-		top: var(--nav-height);
-		z-index: 50;
-	}
-
-	.tabs-inner {
-		max-width: var(--max-width);
-		margin: 0 auto;
-		padding: 0 var(--space-6);
-		display: flex;
-		gap: var(--space-1);
-	}
-
-	.credo-tabs a {
-		display: block;
-		padding: var(--space-3) var(--space-4);
-		font-size: 0.875rem;
-		font-weight: 500;
-		color: rgba(255, 255, 255, 0.5);
-		border-bottom: 2px solid transparent;
-		margin-bottom: -1px;
+	.credo-follow-btn {
+		margin-left: auto;
+		flex-shrink: 0;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		font-family: inherit;
+		font-size: 0.75rem;
+		font-weight: 510;
+		color: white;
+		background: var(--color-accent);
+		padding: 0.25rem 0.65rem;
+		border: 1px solid var(--color-accent);
+		border-radius: var(--radius-md);
+		cursor: pointer;
 		transition:
 			color var(--transition-fast),
-			border-color var(--transition-fast);
+			border-color var(--transition-fast),
+			background var(--transition-fast);
 	}
 
-	.credo-tabs a:hover {
-		color: rgba(255, 255, 255, 0.85);
+	.credo-follow-btn:hover:not(:disabled) {
+		background: var(--color-accent-dark);
+		border-color: var(--color-accent-dark);
 	}
 
-	.credo-tabs a.active {
+	/* Following = quiet outline state (the action is now "unfollow") */
+	.credo-follow-btn.following {
+		color: rgba(255, 255, 255, 0.7);
+		background: transparent;
+		border-color: rgba(255, 255, 255, 0.2);
+	}
+
+	.credo-follow-btn.following:hover:not(:disabled) {
 		color: white;
-		border-bottom-color: var(--color-accent);
+		border-color: rgba(255, 255, 255, 0.35);
+		background: rgba(255, 255, 255, 0.06);
+	}
+
+	.credo-follow-btn:disabled {
+		opacity: 0.6;
+		cursor: default;
 	}
 </style>

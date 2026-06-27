@@ -64,15 +64,15 @@
 
 	// ── Means taxonomy display ───────────────────────────────
 	const MEANS_COLOR: Record<string, string> = {
-		incentive:  'var(--score-hero)',
-		penalty:    'var(--score-negative)',
-		mandate:    '#3b82f6',
-		boycott:    '#a855f7',
+		incentive: 'var(--score-hero)',
+		penalty: 'var(--score-negative)',
+		mandate: '#3b82f6',
+		boycott: '#a855f7',
 		divestment: '#f59e0b',
-		zoning:     'var(--score-positive)',
+		zoning: 'var(--score-positive)',
 		litigation: '#ef4444',
-		petition:   '#6b7280',
-		subsidy:    '#84cc16'
+		petition: '#6b7280',
+		subsidy: '#84cc16'
 	};
 </script>
 
@@ -136,14 +136,15 @@
 					<button
 						class="area-pill"
 						class:active={selectedGeoId === null}
-						onclick={() => (selectedGeoId = null)}
-					>All areas</button>
+						onclick={() => (selectedGeoId = null)}>All areas</button
+					>
 					{#each filterableGeos as geo (geo.id)}
 						<button
 							class="area-pill"
 							class:active={selectedGeoId === geo.id}
 							onclick={() => (selectedGeoId = selectedGeoId === geo.id ? null : geo.id)}
-						>{geo.name}</button>
+							>{geo.name}</button
+						>
 					{/each}
 				</div>
 			{/if}
@@ -196,10 +197,9 @@
 									{#each agenda.means as am (am.means_id)}
 										{@const color = MEANS_COLOR[am.means.category.id] ?? '#6b7280'}
 										<div class="means-item">
-											<span
-												class="means-badge"
-												style="--badge-color: {color}"
-											>{am.means.category.label}</span>
+											<span class="means-badge" style="--badge-color: {color}"
+												>{am.means.category.label}</span
+											>
 											<div class="means-body">
 												<p class="means-title">{am.means.title}</p>
 												{#if am.means.description}
@@ -234,10 +234,7 @@
 			<div class="actor-grid">
 				{#each credo.entities as entity (entity.id)}
 					{@const tier = scoreTier(entity.impact_score)}
-					<button
-						class="actor-card actor-card--{tier}"
-						onclick={() => (selectedActor = entity)}
-					>
+					<button class="actor-card actor-card--{tier}" onclick={() => (selectedActor = entity)}>
 						<div class="actor-card-top">
 							<span class="actor-type">{entity.type}</span>
 							<span class="actor-score score--{tier}">
@@ -624,11 +621,21 @@
 		transform: translateY(-2px);
 	}
 
-	.actor-card--hero     { border-left-color: var(--score-hero); }
-	.actor-card--positive { border-left-color: var(--score-positive); }
-	.actor-card--neutral  { border-left-color: var(--color-border-strong); }
-	.actor-card--negative { border-left-color: var(--score-negative); }
-	.actor-card--villain  { border-left-color: var(--score-villain); }
+	.actor-card--hero {
+		border-left-color: var(--score-hero);
+	}
+	.actor-card--positive {
+		border-left-color: var(--score-positive);
+	}
+	.actor-card--neutral {
+		border-left-color: var(--color-border-strong);
+	}
+	.actor-card--negative {
+		border-left-color: var(--score-negative);
+	}
+	.actor-card--villain {
+		border-left-color: var(--score-villain);
+	}
 
 	.actor-card-top {
 		display: flex;
@@ -661,16 +668,36 @@
 		flex-shrink: 0;
 	}
 
-	.score--hero     { color: var(--score-hero); }
-	.score--hero .score-dot     { background: var(--score-hero); }
-	.score--positive { color: var(--score-positive); }
-	.score--positive .score-dot { background: var(--score-positive); }
-	.score--neutral  { color: var(--color-text-muted); }
-	.score--neutral .score-dot  { background: var(--color-text-muted); }
-	.score--negative { color: var(--score-negative); }
-	.score--negative .score-dot { background: var(--score-negative); }
-	.score--villain  { color: var(--score-villain); }
-	.score--villain .score-dot  { background: var(--score-villain); }
+	.score--hero {
+		color: var(--score-hero);
+	}
+	.score--hero .score-dot {
+		background: var(--score-hero);
+	}
+	.score--positive {
+		color: var(--score-positive);
+	}
+	.score--positive .score-dot {
+		background: var(--score-positive);
+	}
+	.score--neutral {
+		color: var(--color-text-muted);
+	}
+	.score--neutral .score-dot {
+		background: var(--color-text-muted);
+	}
+	.score--negative {
+		color: var(--score-negative);
+	}
+	.score--negative .score-dot {
+		background: var(--score-negative);
+	}
+	.score--villain {
+		color: var(--score-villain);
+	}
+	.score--villain .score-dot {
+		background: var(--score-villain);
+	}
 
 	.actor-name {
 		font-size: 1rem;

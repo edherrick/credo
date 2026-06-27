@@ -51,6 +51,48 @@ class CredoEntity(Base):
     impact_score: Mapped[int] = mapped_column(Integer, nullable=False)
 
 
+class CredoSubscription(Base):
+    """Junction: a user follows a credo.
+
+    Self-membership write shape — distinct from the owner-scoped `get_owned_credo`
+    pattern. Any authenticated user may follow any credo; the user acts only on
+    their own row (PK is the (user, credo) pair, so following is idempotent).
+    """
+
+    __tablename__ = "credo_subscriptions"
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
+    )
+    credo_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("credos.id", ondelete="CASCADE"), primary_key=True
+    )
+    created_at: Mapped[str] = mapped_column(
+        TIMESTAMP(timezone=True), server_default=func.now(), nullable=False
+    )
+
+
+class UserBelief(Base):
+    """Junction: a user's personal collection of beliefs they endorse.
+
+    Self-membership write shape (same as `credo_subscriptions`): the user toggles
+    only their own row, no ownership check. A saved belief can later be *promoted*
+    into a credo the user owns via the `credo_beliefs` junction.
+    """
+
+    __tablename__ = "user_beliefs"
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
+    )
+    belief_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("beliefs.id", ondelete="CASCADE"), primary_key=True
+    )
+    created_at: Mapped[str] = mapped_column(
+        TIMESTAMP(timezone=True), server_default=func.now(), nullable=False
+    )
+
+
 class Belief(Base):
     """Shared library of foundational principles and philosophical axioms."""
 
