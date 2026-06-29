@@ -10,18 +10,22 @@
 
 ```
 credo/
+├── README.md              ← project overview + quick start (repo front door)
 ├── CLAUDE.md              ← you are here
 ├── docker-compose.yml     ← local Postgres + PostGIS
 ├── backend/
+│   ├── README.md          ← backend setup, migrations, testing
 │   ├── pyproject.toml
 │   ├── alembic.ini
-│   ├── alembic/versions/  ← 8 numbered migrations
+│   ├── alembic/versions/  ← numbered Alembic migrations
 │   ├── main.py            ← FastAPI app entry point
 │   ├── database.py        ← async engine + get_db dep
 │   ├── models/            ← SQLAlchemy ORM models
 │   ├── schemas/           ← Pydantic response shapes
+│   ├── serializers.py     ← shared response serialisation helpers
 │   ├── routes/            ← API route handlers
-│   └── scripts/           ← one-off data scripts
+│   ├── scripts/           ← one-off data scripts
+│   └── tests/             ← pytest suite
 └── frontend/
     └── src/
         ├── app.css              ← design tokens + global reset (single source of truth)
