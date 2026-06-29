@@ -51,13 +51,7 @@
 	}
 </script>
 
-<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<dialog
-	bind:this={dialog}
-	class="actor-dialog"
-	onclick={handleBackdrop}
-	onkeydown={handleKeydown}
->
+<dialog bind:this={dialog} class="actor-dialog" onclick={handleBackdrop} onkeydown={handleKeydown}>
 	{#if entity}
 		{@const tier = scoreTier(entity.impact_score)}
 		<div class="modal-inner">
@@ -108,12 +102,14 @@
 										<p class="timeline-desc">{ev.description}</p>
 									{/if}
 									{#if ev.source_url}
+										<!-- eslint-disable svelte/no-navigation-without-resolve -- external source URL -->
 										<a
 											class="timeline-source"
 											href={ev.source_url}
 											target="_blank"
-											rel="noopener noreferrer"
-										>Source ↗</a>
+											rel="noopener noreferrer">Source ↗</a
+										>
+										<!-- eslint-enable svelte/no-navigation-without-resolve -->
 									{/if}
 								</div>
 							</li>
@@ -151,7 +147,7 @@
 	}
 
 	.actor-dialog::backdrop {
-		background: rgba(0, 0, 0, 0.55);
+		background: var(--scrim);
 		backdrop-filter: blur(2px);
 	}
 
@@ -171,11 +167,21 @@
 		flex-shrink: 0;
 	}
 
-	.modal-header--hero    { border-left-color: var(--score-hero); }
-	.modal-header--positive { border-left-color: var(--score-positive); }
-	.modal-header--neutral  { border-left-color: var(--color-border); }
-	.modal-header--negative { border-left-color: var(--score-negative); }
-	.modal-header--villain  { border-left-color: var(--score-villain); }
+	.modal-header--hero {
+		border-left-color: var(--score-hero);
+	}
+	.modal-header--positive {
+		border-left-color: var(--score-positive);
+	}
+	.modal-header--neutral {
+		border-left-color: var(--color-border);
+	}
+	.modal-header--negative {
+		border-left-color: var(--score-negative);
+	}
+	.modal-header--villain {
+		border-left-color: var(--score-villain);
+	}
 
 	.modal-header-meta {
 		display: flex;
@@ -209,16 +215,36 @@
 		flex-shrink: 0;
 	}
 
-	.score--hero     { color: var(--score-hero); }
-	.score--hero .score-dot { background: var(--score-hero); }
-	.score--positive { color: var(--score-positive); }
-	.score--positive .score-dot { background: var(--score-positive); }
-	.score--neutral  { color: var(--color-text-muted); }
-	.score--neutral .score-dot { background: var(--color-text-muted); }
-	.score--negative { color: var(--score-negative); }
-	.score--negative .score-dot { background: var(--score-negative); }
-	.score--villain  { color: var(--score-villain); }
-	.score--villain .score-dot { background: var(--score-villain); }
+	.score--hero {
+		color: var(--score-hero);
+	}
+	.score--hero .score-dot {
+		background: var(--score-hero);
+	}
+	.score--positive {
+		color: var(--score-positive);
+	}
+	.score--positive .score-dot {
+		background: var(--score-positive);
+	}
+	.score--neutral {
+		color: var(--color-text-muted);
+	}
+	.score--neutral .score-dot {
+		background: var(--color-text-muted);
+	}
+	.score--negative {
+		color: var(--score-negative);
+	}
+	.score--negative .score-dot {
+		background: var(--score-negative);
+	}
+	.score--villain {
+		color: var(--score-villain);
+	}
+	.score--villain .score-dot {
+		background: var(--score-villain);
+	}
 
 	.modal-name {
 		font-family: var(--font-serif);
@@ -346,8 +372,12 @@
 		font-family: var(--font-mono);
 	}
 
-	.timeline-score.positive { color: var(--score-hero); }
-	.timeline-score.negative { color: var(--score-villain); }
+	.timeline-score.positive {
+		color: var(--score-hero);
+	}
+	.timeline-score.negative {
+		color: var(--score-villain);
+	}
 
 	.timeline-metric {
 		font-size: 0.68rem;

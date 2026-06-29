@@ -16,7 +16,6 @@
 		selectedIndex: number;
 		/** When the map is collapsed and then re-expanded, invalidateSize is needed */
 		collapsed?: boolean;
-		onchange: (index: number) => void;
 	}
 
 	let {
@@ -25,8 +24,7 @@
 		stateFips,
 		values,
 		selectedIndex,
-		collapsed = false,
-		onchange
+		collapsed = false
 	}: Props = $props();
 
 	let map: import('leaflet').Map | undefined;
@@ -316,10 +314,10 @@
 	<div class="legend">
 		<div class="legend-title">Price range</div>
 		<div class="legend-scale">
-			{#each COLORS as color, i (i)}
+			{#each COLORS as _color, i (i)}
 				<div
 					class="legend-swatch"
-					style="background:{color}"
+					style="background: var(--choropleth-{i + 1})"
 					title={formatUSD(MIN_VALUE + (i / (COLORS.length - 1)) * (MAX_VALUE - MIN_VALUE))}
 				></div>
 			{/each}
@@ -391,7 +389,7 @@
 
 	.box-zoom-btn:hover {
 		background: var(--color-bg);
-		border-color: rgba(0, 0, 0, 0.4);
+		border-color: color-mix(in srgb, black 40%, transparent);
 	}
 
 	.box-zoom-btn.active {

@@ -170,7 +170,6 @@
 				values={allValues}
 				{selectedIndex}
 				collapsed={mapCollapsed}
-				onchange={(i) => (selectedIndexOverride = i)}
 			/>
 		</div>
 		{#if metricPanelOpen}

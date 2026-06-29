@@ -7,13 +7,18 @@
 	const aggregate = $derived(data.aggregate);
 	const credo = $derived(data.credo);
 
-	const primaryAgenda = $derived(credo.agendas.find((a: { metric_id: string | null }) => a.metric_id));
+	const primaryAgenda = $derived(
+		credo.agendas.find((a: { metric_id: string | null }) => a.metric_id)
+	);
 	const metricId = $derived(primaryAgenda?.metric_id ?? null);
 
 	// Zip dates + avg_values into the format MetricMap expects
 	const mapValues = $derived(
 		aggregate
-			? aggregate.dates.map((d: string, i: number) => ({ period_start: d, value: aggregate.avg_values[i] }))
+			? aggregate.dates.map((d: string, i: number) => ({
+					period_start: d,
+					value: aggregate.avg_values[i]
+				}))
 			: []
 	);
 
@@ -75,13 +80,7 @@
 {:else}
 	<div class="map-tab" bind:this={tabEl}>
 		<div class="map-wrap">
-			<MetricMap
-				{metricId}
-				stateFips="17"
-				values={mapValues}
-				{selectedIndex}
-				onchange={(i) => (selectedIndex = i)}
-			/>
+			<MetricMap {metricId} stateFips="17" values={mapValues} {selectedIndex} />
 		</div>
 
 		<!-- Interactive splitter (WAI-ARIA window-splitter pattern); the a11y rules
@@ -152,7 +151,9 @@
 		border-radius: 1px;
 		background: var(--color-text-faint);
 		opacity: 0.5;
-		transition: background var(--transition-fast), opacity var(--transition-fast);
+		transition:
+			background var(--transition-fast),
+			opacity var(--transition-fast);
 	}
 
 	.splitter:hover,

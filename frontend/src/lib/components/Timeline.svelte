@@ -101,8 +101,7 @@
 			return;
 		}
 
-		let idx =
-			currentIndex >= clampedRangeEnd ? clampedRangeStart : currentIndex;
+		let idx = currentIndex >= clampedRangeEnd ? clampedRangeStart : currentIndex;
 		isPlaying = true;
 		playIndex = idx;
 		onchange(idx);
@@ -204,7 +203,7 @@
 		}
 	}
 
-	function onTrackPointerUp(e: PointerEvent) {
+	function onTrackPointerUp(_e: PointerEvent) {
 		if (_panStartX === null) return;
 		const wasPan = _panTotalDelta > 2;
 		_panStartX = null;
@@ -213,7 +212,10 @@
 	}
 
 	function onTrackClick(e: MouseEvent) {
-		if (_panTotalDelta > 2) { _panTotalDelta = 0; return; }
+		if (_panTotalDelta > 2) {
+			_panTotalDelta = 0;
+			return;
+		}
 		_panTotalDelta = 0;
 		const target = e.target as HTMLElement;
 		if (target.closest('.range-handle') || target.closest('.playhead')) return;
@@ -258,14 +260,11 @@
 						onclick={onzoomout}
 						disabled={zoomWindowSize === null}
 						aria-label="Zoom out"
-						title="Zoom out"
-					><ZoomOut size={10} aria-hidden="true" /></button>
-					<button
-						class="zoom-btn"
-						onclick={onzoomin}
-						aria-label="Zoom in"
-						title="Zoom in"
-					><ZoomIn size={10} aria-hidden="true" /></button>
+						title="Zoom out"><ZoomOut size={10} aria-hidden="true" /></button
+					>
+					<button class="zoom-btn" onclick={onzoomin} aria-label="Zoom in" title="Zoom in"
+						><ZoomIn size={10} aria-hidden="true" /></button
+					>
 				{/if}
 				<span class="label-current">
 					{values[currentIndex] ? formatDate(values[currentIndex].period_start) : ''}
@@ -290,7 +289,8 @@
 			<!-- Active range highlight -->
 			<div
 				class="range-band"
-				style="left: {indexToPercent(clampedRangeStart)}%; right: {100 - indexToPercent(clampedRangeEnd)}%"
+				style="left: {indexToPercent(clampedRangeStart)}%; right: {100 -
+					indexToPercent(clampedRangeEnd)}%"
 			></div>
 
 			<!-- Tick marks — only visible range -->
@@ -396,7 +396,9 @@
 		align-items: center;
 		justify-content: center;
 		cursor: pointer;
-		transition: border-color var(--transition-fast), color var(--transition-fast),
+		transition:
+			border-color var(--transition-fast),
+			color var(--transition-fast),
 			background var(--transition-fast);
 	}
 
@@ -463,7 +465,9 @@
 		color: var(--color-text-muted);
 		cursor: pointer;
 		padding: 0;
-		transition: border-color var(--transition-fast), color var(--transition-fast);
+		transition:
+			border-color var(--transition-fast),
+			color var(--transition-fast);
 	}
 
 	.zoom-btn:hover:not(:disabled) {
@@ -505,7 +509,7 @@
 		top: 50%;
 		height: 3px;
 		margin-top: -1.5px;
-		background: rgba(240, 59, 32, 0.25);
+		background: color-mix(in srgb, var(--color-accent) 25%, transparent);
 		pointer-events: none;
 	}
 
@@ -556,8 +560,12 @@
 		transition: opacity var(--transition-fast);
 	}
 
-	.range-handle.left .handle-bar { right: 0; }
-	.range-handle.right .handle-bar { left: 0; }
+	.range-handle.left .handle-bar {
+		right: 0;
+	}
+	.range-handle.right .handle-bar {
+		left: 0;
+	}
 
 	.handle-tab {
 		position: absolute;
@@ -569,10 +577,18 @@
 		transition: opacity var(--transition-fast);
 	}
 
-	.range-handle.left .handle-tab { right: 0; }
-	.range-handle.right .handle-tab { left: 0; }
-	.handle-tab.top { top: 0; }
-	.handle-tab.bottom { bottom: 0; }
+	.range-handle.left .handle-tab {
+		right: 0;
+	}
+	.range-handle.right .handle-tab {
+		left: 0;
+	}
+	.handle-tab.top {
+		top: 0;
+	}
+	.handle-tab.bottom {
+		bottom: 0;
+	}
 
 	.range-handle:hover .handle-bar,
 	.range-handle:hover .handle-tab,
@@ -594,7 +610,9 @@
 		box-shadow: 0 1px 5px rgba(240, 59, 32, 0.4);
 		cursor: grab;
 		z-index: 30;
-		transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+		transition:
+			transform var(--transition-fast),
+			box-shadow var(--transition-fast);
 	}
 
 	.playhead:hover {
@@ -621,7 +639,9 @@
 		font-weight: 500;
 		color: var(--color-text-faint);
 		white-space: nowrap;
-		transition: color var(--transition-fast), font-weight var(--transition-fast);
+		transition:
+			color var(--transition-fast),
+			font-weight var(--transition-fast);
 		pointer-events: none;
 	}
 

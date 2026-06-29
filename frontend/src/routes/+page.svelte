@@ -67,7 +67,7 @@
 			<p class="section-sub">From problem to policy in four steps</p>
 		</div>
 		<div class="steps">
-			{#each steps as step}
+			{#each steps as step (step.n)}
 				<div class="step">
 					<div class="step-number">{step.n}</div>
 					<div class="step-content">
@@ -88,7 +88,7 @@
 			<p class="section-sub">The principles behind the platform</p>
 		</div>
 		<div class="tenets">
-			{#each tenets as tenet}
+			{#each tenets as tenet (tenet)}
 				<div class="tenet">
 					<span class="tenet-mark" aria-hidden="true">&ldquo;</span>
 					<p class="tenet-text">{tenet}</p>

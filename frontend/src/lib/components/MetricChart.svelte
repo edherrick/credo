@@ -258,7 +258,7 @@
 			{/each}
 
 			<!-- Grid: vertical lines at label step positions -->
-			{#each viewDates as d, i (viewStart + i)}
+			{#each viewDates as _d, i (viewStart + i)}
 				{#if i % labelStep === 0}
 					<line
 						x1={dateToX(i)}
@@ -300,7 +300,7 @@
 			{/each}
 
 			<!-- Compare series overlay lines -->
-			{#each viewAlignedCompareSeries as series, ci}
+			{#each viewAlignedCompareSeries as series, ci (series.metricId)}
 				{@const color = COMPARE_COLORS[ci % COMPARE_COLORS.length]}
 				{#each toSegments(series.viewValues) as seg, si (`cmp-${ci}-${si}`)}
 					<polyline

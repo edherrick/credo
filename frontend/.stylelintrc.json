@@ -17,9 +17,18 @@
 				"scale-unlimited/declaration-strict-value": [
 					["/color/", "fill", "stroke", "background"],
 					{
-						"ignoreValues": ["transparent", "currentColor", "inherit", "none", "unset", "white", "black"],
-						"ignoreFunctions": true,
-						"severity": "warning",
+						"ignoreValues": [
+							"transparent",
+							"currentColor",
+							"inherit",
+							"none",
+							"unset",
+							"white",
+							"black",
+							"/^color-mix\\(/",
+							"/gradient\\(/"
+						],
+						"ignoreFunctions": false,
 						"disableFix": true
 					}
 				]

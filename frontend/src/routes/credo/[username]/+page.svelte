@@ -100,7 +100,7 @@
 				<p class="section-sub">The foundational premises this credo takes as self-evidently true</p>
 			</div>
 			<ol class="beliefs-list">
-				{#each credo.beliefs as cb, i}
+				{#each credo.beliefs as cb, i (cb.belief.id)}
 					<li class="belief-item">
 						<span class="belief-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
 						<div class="belief-body">
@@ -167,7 +167,7 @@
 									{@const m = metricForId(agenda.metric_id)}
 									{#if m}<span class="agenda-tag">{m.display_name}</span>{/if}
 								{/if}
-								{#each agenda.geography_ids.slice(0, 2) as gid}
+								{#each agenda.geography_ids.slice(0, 2) as gid (gid)}
 									{@const g = geoForId(gid)}
 									{#if g}<span class="agenda-tag agenda-tag-geo">{g.name}</span>{/if}
 								{/each}

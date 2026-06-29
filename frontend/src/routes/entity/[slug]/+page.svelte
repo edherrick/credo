@@ -18,7 +18,11 @@
 
 	function formatDate(d: string | null): string {
 		if (!d) return '';
-		return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+		return new Date(d).toLocaleDateString('en-US', {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		});
 	}
 </script>
 
@@ -65,12 +69,8 @@
 							<p class="stance-desc">{ev.description}</p>
 						{/if}
 						{#if ev.source_url}
-							<a
-								class="stance-link"
-								href={ev.source_url}
-								target="_blank"
-								rel="noopener noreferrer"
-							>
+							<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external source URL -->
+							<a class="stance-link" href={ev.source_url} target="_blank" rel="noopener noreferrer">
 								View source <ExternalLink size={11} />
 							</a>
 						{/if}

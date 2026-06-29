@@ -30,3 +30,11 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["."]
+exclude = ["tests*"]
+
+[tool.pytest.ini_options]
+# asyncio_mode = "auto" lets us write `async def test_*` without per-test decorators.
+# pythonpath = "." puts the backend root on sys.path so tests can `from main import app`.
+asyncio_mode = "auto"
+testpaths = ["tests"]
+pythonpath = ["."]
